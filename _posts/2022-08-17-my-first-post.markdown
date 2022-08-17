@@ -4,7 +4,7 @@ title:  "깃허브 블로그 완성"
 date:   2022-08-17 21:03:36 +0530
 categories: MyStory
 ---
-><h2>나는 개발자가 되고싶어서 하던 사업을 접었다.<h2>
+나는 개발자가 되고싶어서 하던 사업을 접었다.
 
 개발자가 되고싶은 이유는 큰 이유는 아니다. 단지 내가 쓰고싶은걸 만들고 싶었기 때문이다.
 사업할때부터 문제가 발생하면 발생이유부터 해결방법까지 생각하고 수행하며 완료하는 삶을 살았다.
@@ -19,19 +19,8 @@ categories: MyStory
 마크다운이 익숙하지않아 쉽진 않지만 새로운걸 배우고 써본다는점에 매우 흥미롭다.
 오늘은 이쯤하고 내일부터 이것저것 커스텀해봐야겠다.
 
-```javascript
-const Razorpay = require('razorpay');
-
-let rzp = Razorpay({
-	key_id: 'KEY_ID',
-	secret: 'name'
-});
-
-// capture request
-rzp.capture(payment_id, cost)
-	.then(function (data) {
-		return 2;
-	})
+```java
+TEST
 ```
 
 Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
