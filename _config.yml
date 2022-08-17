@@ -65,6 +65,6 @@ plugins:
 #  - jekyll-feed
 
 timezone: Asia/Seoul
-url: "https://funnykyeon.github.io/" 
+url: "https://funnykyeon.github.io" 
 baseurl: ""
 
