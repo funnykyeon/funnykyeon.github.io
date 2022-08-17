@@ -68,3 +68,7 @@ plugins:
 timezone: Asia/Seoul
 url: "https://funnykyeon.github.io/" 
 baseurl: ""
+gems:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll/figure
