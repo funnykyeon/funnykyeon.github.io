@@ -27,7 +27,6 @@ plainwhite:
   # generate social links in footer
   social_links: 
     github:  funnykyeon
-    linkedIn: in/기원-권-685376117/
     #dribbble: jekyll
     #flickr:   jekyll
     #instagram: jekyll
@@ -55,7 +54,7 @@ plainwhite:
 theme: plainwhite
 
 plugins: 
-  # - jekyll-seo-tag
+  - jekyll-seo-tag
   # - jekyll-coffeescript
   # - jekyll-default-layout
   # - jekyll-github-metadata
@@ -68,7 +67,4 @@ plugins:
 timezone: Asia/Seoul
 url: "https://funnykyeon.github.io/" 
 baseurl: ""
-gems:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll/figure
+
