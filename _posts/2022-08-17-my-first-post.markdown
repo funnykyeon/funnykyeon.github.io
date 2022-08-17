@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "깃허브 블로그 완성"
-date:   2022-08-17 22:20:36 +0530
+date:   2022-08-17 21:03:36 +0530
 categories: MyStory
 ---
 ><h2>나는 개발자가 되고싶어서 하던 사업을 접었다.<h2>
@@ -18,6 +18,27 @@ categories: MyStory
 이유는 블로그의 모든 것을 내 입맛대로 바꿀 수 있다는 점이였다.
 마크다운이 익숙하지않아 쉽진 않지만 새로운걸 배우고 써본다는점에 매우 흥미롭다.
 오늘은 이쯤하고 내일부터 이것저것 커스텀해봐야겠다.
+
+```javascript
+const Razorpay = require('razorpay');
+
+let rzp = Razorpay({
+	key_id: 'KEY_ID',
+	secret: 'name'
+});
+
+// capture request
+rzp.capture(payment_id, cost)
+	.then(function (data) {
+		return 2;
+	})
+```
+
+Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+
+[jekyll-docs]: https://jekyllrb.com/docs/home
+[jekyll-gh]:   https://github.com/jekyll/jekyll
+[jekyll-talk]: https://talk.jekyllrb.com/
 
 Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
 
