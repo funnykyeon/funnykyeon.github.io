@@ -10,7 +10,7 @@ categories: Error
 
 ---
 
-# [Error] Intellij Spring 'Could not find or load main class' Caused by 'java.lang.ClassNotFoundException'
+<h3>[Error] Intellij Spring 'Could not find or load main class' Caused by 'java.lang.ClassNotFoundException'</h3>
 
   
 금일 PM일로 면담하던중 한조가 찾아왔다.
@@ -20,7 +20,8 @@ categories: Error
 ![](https://intellij-support.jetbrains.com/hc/user_images/1RQEc8BaGy-zMLUmNY7WuQ.png)
 
 나도 처음에 겪었던 문제라 안내를 해주었다.
-File>Settings>Build,Execution,Deployment > Maven > Gradle 이동후 Build and run using,Runtests using 두개 모두 Intellij IDEA로 변경하면 될거라고 했지만
+File>Settings>Build,Execution,Deployment > Maven > Gradle 이동후 
+Build and run using,Runtests using 두개 모두 Intellij IDEA로 변경하면 될거라고 했지만
 변경후에도 여전히 에러가 발생되고있었다.
 
 1. JetBrains에서도 해결방법을 찾아봤으나 실패
@@ -41,3 +42,4 @@ https://stackoverflow.com/questions/10654120/error-could-not-find-or-load-main-c
 
 내가 아는 에러라도 발생사유는 여러가지일수있다. 
 앞으론 여러 경우의수를 생각하여 에러에 대비하면 좋을거같다.
+
