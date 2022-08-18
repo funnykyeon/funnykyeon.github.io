@@ -1,0 +1,43 @@
+---
+
+layout: post
+
+title: "IntelliJ could not find or load main class error"
+
+date: 2022-08-17 20:44:36 +0530
+
+categories: Error
+
+---
+
+# [Error] Intellij Spring 'Could not find or load main class' Caused by 'java.lang.ClassNotFoundException'
+
+  
+금일 PM일로 면담하던중 한조가 찾아왔다.
+빌드 후 배포를 해야하는 과정에서 빌드가 되지않아 어려움을 겪고 있는 상황이였다.
+
+문제의 에러
+![](https://intellij-support.jetbrains.com/hc/user_images/1RQEc8BaGy-zMLUmNY7WuQ.png)
+
+나도 처음에 겪었던 문제라 안내를 해주었다.
+File>Settings>Build,Execution,Deployment > Maven > Gradle 이동후 Build and run using,Runtests using 두개 모두 Intellij IDEA로 변경하면 될거라고 했지만
+변경후에도 여전히 에러가 발생되고있었다.
+
+1. JetBrains에서도 해결방법을 찾아봤으나 실패
+https://intellij-support.jetbrains.com/hc/en-us/community/posts/360008117419-Error-Could-not-find-or-load-main-class-com-company-Main-Caused-by-java-lang-ClassNotFoundException-com-company-Main
+
+2. StackOverflow에서도 해결방법을 찾아봤으나 실패
+https://stackoverflow.com/questions/10654120/error-could-not-find-or-load-main-class-in-intellij-ide
+
+3. 깃허브로 클론하여 내pc 환경에서 실행
+빌드가 정상적으로 이루어졌다. 여기서 자바버전 설정및 개인설정 문제가 아닐까라는 생각이 들었다.
+
+4. 내환경과 동일한 환경으로 설정후 실행했으나 실패
+무엇이 문제인지 미궁에 빠지게 되었다.  
+
+5. 갑자기 StackOverflow에서 봤던 Intellij IDEA 재설치하라는 댓글이 생각나서 바로 재설치
+성공이다! 설치중 문제가 있었던거같다. 수강생한테 전 프로젝트에서는 빌드 잘됬었냐고 물어봤으나
+첫빌드라고한다. 해결해서 수강생은 기뻐하며 다시 배포하러 자리로 갔다.
+
+내가 아는 에러라도 발생사유는 여러가지일수있다. 
+앞으론 여러 경우의수를 생각하여 에러에 대비하면 좋을거같다.
