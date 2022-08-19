@@ -1,7 +1,7 @@
-title: Your awesome title
+title: Developer Kyeon Blog
 author: GitHub User
 email: funnykyeon@naver.com
-description: > # this means to ignore newlines until "show_exerpts:"
+description: > # Developer Kyeon Blog
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
   Google search results) and in your feed.xml site description.
@@ -19,9 +19,9 @@ plainwhite:
   search: true # set to true to enable searchbar
   dark_mode: true # set to true to add dark mode toggle
   portfolio_image: "assets/99777315.png" # the path from the base directory of the site to the image to display (no / at the start)
-  html_lang: "en" # set the lang attribute of the <html> tag for the pages. See here for a list of codes: https://www.w3schools.com/tags/ref_country_codes.asp
+  html_lang: kr" # set the lang attribute of the <html> tag for the pages. See here for a list of codes: https://www.w3schools.com/tags/ref_country_codes.asp
   condensed_mobile: 
-    #- home
+    - home
     - page
     - post
   # generate social links in footer
