@@ -10,7 +10,7 @@ categories: Error
 
 ---
 
-<h3>[Error] Intellij Spring 'Could not find or load main class' Caused by 'java.lang.ClassNotFoundException'</h3>
+Intellij Spring 'Could not find or load main class' Caused by 'java.lang.ClassNotFoundException'
 
   
 금일 PM일로 면담하던중 한조가 찾아왔다.
