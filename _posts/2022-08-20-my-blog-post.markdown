@@ -13,6 +13,7 @@ categories: Java
 오버로딩과 오버라이딩에 대해 다시한번 짚고 가려고한다.
 
 
+![](https://velog.velcdn.com/images/funnykyeon/post/cff92b37-e2d2-4307-9588-68507b929c05/image.png)
 1. 오버로딩(Overloading)
 - 메서드의 **이름은 같고 매개변수의 갯수나 타입이 다른 함수를 정의**하는 것을 의미한다.
 - 리턴값만을 다르게 갖는 오버로딩은 작성 할 수 없다.
