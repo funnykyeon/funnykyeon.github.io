@@ -11,13 +11,13 @@ categories: Java
 ---
 
 <h3>오버로딩과 오버라이딩에 대해 다시한번 짚고 가려고한다.</h3>
-![](https://velog.velcdn.com/images/funnykyeon/post/cff92b37-e2d2-4307-9588-68507b929c05/image.png)
 
-## 1. 오버로딩(Overloading)
+
+1. 오버로딩(Overloading)
 - 메서드의 **이름은 같고 매개변수의 갯수나 타입이 다른 함수를 정의**하는 것을 의미한다.
 - 리턴값만을 다르게 갖는 오버로딩은 작성 할 수 없다.
 
-## 2. 오버라이딩(Overriding)
+2. 오버라이딩(Overriding)
 - over + ride =  먼가 위에서 (라이딩 한다)달린다???
 - 오버라이딩(overriding)은 무시하다, 우선하다라는 뜻을 가지고 있는데 말 그대로 기반 클래스의 메서드를 무시하고 새로운 메서드를 만든다는 뜻이다.
 - 상위 클래스의 메서드를 하위 클래스가 ***재정의*** 하는 것이다.
@@ -27,6 +27,7 @@ categories: Java
 오버로딩(Overloading)은 기존에 없던 새로운 메서드를 정의하는 것이고,
 오버라이딩(Overriding)은 상속 받은 메서드의 내용만 변경 하는 것이다.
 
+![](https://velog.velcdn.com/images/funnykyeon/post/cff92b37-e2d2-4307-9588-68507b929c05/image.png)
 
 |구분|오버로딩|오버라이딩|
 |:---:|:---:|:---:|
