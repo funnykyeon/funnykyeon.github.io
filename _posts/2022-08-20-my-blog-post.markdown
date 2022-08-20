@@ -28,8 +28,6 @@ categories: Java
 오버로딩(Overloading)은 기존에 없던 새로운 메서드를 정의하는 것이고,
 오버라이딩(Overriding)은 상속 받은 메서드의 내용만 변경 하는 것이다.
 
-![](https://velog.velcdn.com/images/funnykyeon/post/cff92b37-e2d2-4307-9588-68507b929c05/image.png)
-
 |구분|오버로딩|오버라이딩|
 |:---:|:---:|:---:|
 |메소드 이름|동일|동일|
