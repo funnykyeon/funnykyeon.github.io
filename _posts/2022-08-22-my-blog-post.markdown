@@ -12,76 +12,73 @@ categories: Java
 JAVA Compiler
 
 
-![](https://velog.velcdn.com/images/funnykyeon/post/e2376ae5-d552-46e0-acdb-94b8d199e546/image.png)
-
-우선 String, StringBuffer, StringBuilder 모두 문자열을 저장하고, 관리하는 클래스입니다.
-
-> #  String
-
-먼저 String과 다른 클래스(StringBuffer, StringBuilder)의 차이점은 두 문자열 클래스의 아주 기본적인 차이는 String은 불변, StringBuffer는 가변이 있습니다.
+![](https://velog.velcdn.com/images/funnykyeon/post/1eee9ce5-01eb-42c9-a6e0-ffac022970bd/image.png)
 
 
+> ## 자바의 호환성
 
-String은 문자열을 대표하는 것으로 문자열을 조작하는 경우 유용하게 사용할 수 있습니다. 문자열, 숫자, char 등은 concat할때는 StringBuffer, StringBuilder를 사용할 수 있습니다. 단, 복잡한 경우 의미가 있고, 단순한 경우에는 굳이 StringBuffer, StringBuilder를 쓰지 않고 +연산자를 활용해 직접 합지면 됩니다.
+ - 자바는 C언어와 다르게 각 OS별 컴파일러 없이 하나의 컴파일러로 모든 OS를 지원하는 특징을 가지고 있습니다.
 
+ 예를 들어, C언어로 소스를 짜고 맥OS에 실행시키려면 맥용 C컴파일러가 필요하고 윈도우OS에 실행시키려면 윈도우용 C컴파일러가 필요한거죠.
 
+ 물론, 이전 기종 마다 소스 파일을 짜야했던 어셈블리어와 기계어에 비하면 C언어는 소스 파일 하나만 짜면 되는 편리함을 가지고 있습니다.
+<br>
+ **C언어는 One Source Multi Object Use Anywhere의 모토를 가지고 있습니다.** 
+   ```하나의 소스로 각 기기에 맞는 목적 파일을 만들어 어디든 사용 가능하다.```
+ <br>
+ **하지만, 자바는 Write Once Use Anywhere 의 모토를 가지고 있습니다.**
+```소스 코드 하나만 짜면 어디든 사용 가능하다.```
+<br>
+ 결국, 하나의 목적 파일로 어디든 실행 가능하냐, 다수의 목적 파일을 만들어 각 기기에 맞게 사용하냐의 차이입니다.
+ 
+ 이 목적파일! (Bytecode로 이루어진 파일 = .class)인 반기계어를 만드는 역할을 하는 녀석이 바로 **자바 컴파일러** 입니다.
+ 
+ 여기서, 반 기계어는 아직 컴퓨터가 읽을 수 없는 바이트 코드를 말하며, JVM이라는 애가 완전 기계 코드로 바꿔줍니다. JVM은 자바가상머신으로서, 자바 프로그램을 실행시켜주는 가상 컴퓨터라고 생각하면 됩니다.
 
-String 객체는 한번 생성되면 할당된 메모리 공간이 변하지 않습니다. + 연산자 또는 concat 메서드를 통해 기존에 생성된 String 클래스 객체 문자열에 다른 문자열을 붙여도 기존 문자열에 새로운 문자열을 붙이는 것이 아니라,
+ 위에서 언급한 것과 같이,
+자바를 사용하게 되면 컴파일러를 기종별로 따로 구매해두지 않아도 됩니다.
+심지어 자바 컴파일러는 무료입니다!
+C컴파일러는 비싼건 1000만원대입니다.
 
+ ** 그렇다면, 자바 컴파일 과정을 그림으로 먼저 이해해 봅시다.**
+![](https://velog.velcdn.com/images/funnykyeon/post/de96284c-7f79-4cd2-8295-a5145a6faf16/image.png)
 
-새로운 String 객체를 만든 후, 새 String 객체에 연결된 문자열을 저장하고, 그 객체를 참조하도록 합니다. (즉, String 클래스 객체는 Heap 메모리 영역(가비지 컬렉션이 동작하는 영역)에 생성. 한번 생성된 객체의 내부 내용을 변화시킬 수 없습니다. 기존 객체가 제거되면 Java의 가비지 컬렉션이 회수합니다.)
+ 그림을 토대로 자바 컴파일 순서를 정리해보겠습니다.
 
+ ### 자바 컴파일 순서
+- 1) 개발자가 자바 소스파일(.java)를 작성합니다. (콘솔, 커맨드 창, 터미널, IDE툴 등 안에서)
+- 2) javac 명령어 또는 Build(또는 Run)를 사용하여 소스파일을 컴파일합니다.
+- 3) 이때 생성된, 자바 바이트 코드(.class)파일은 아직 컴퓨터가 읽을 수 없습니다.
+- 4) 해당 바이트 코드를 JVM의 클래스로더(Class Loader)에게 전달합니다.
+- 5) 클래스 로더는 동적 로딩을 통해 필요한 클래스들을 로딩 및 링크하여 JVM내로 로드합니다.
+- 6) JVM내에 있는 실행 엔진에 의해 기계어로 해석되어 메모리 상(Runtime Data Area)에 배치됩니다.
+- 7) 어떠한 OS든 Java가 설치 되어 있다면 JVM에 의해서 .java 코드가 기계어로 해석될 수 있는 것입니다.
 
+ 여기서, 짚고 넘어가야 할 개념이 클래스 로더와 JVM 실행 엔진 인데요,
+그 세부 동작을 한 번 읽어보면서,
+JVM 메모리가 어떻게 생성되고 바이트 코드가 기계어로 어떻게 해석되는지 이해해 봅시다.
 
-String 객체는 이러한 이유로 문자열 연산이 많은 경우, 그 성능이 좋지 않습니다.
+ 
 
+**JVM내의 공간을 할당해주는 클래스 로더 세부 동작 과정**
 
-하지만, 불변한 객체는 간단하게 사용가능하고, 동기화에 대해 신경쓰지 않아도 되기때문에(Thread-safe),  내부 데이터를 자유롭게 공유 가능합니다.
+- 로드 : 클래스 파일을 가져와서 JVM의 메모리에 로드합니다.
+- 검증 : 자바 언어 명세(Java Language Specification) 및 JVM 명세에 명시된 대로 구성되어 있는지 검사합니다.
+- 준비 : 클래스가 필요로 하는 메모리를 할당합니다. (필드, 메서드, 인터페이스 등등)
+- 분석 : 클래스의 상수 풀 내 모든 심볼릭 레퍼런스를 다이렉트 레퍼런스로 변경합니다.
+- 초기화 : 클래스 변수들을 적절한 값으로 초기화합니다. (static 필드)
 
-> # StringBuffer와 StringBuilder
+**기계어로 해석해주는 실행 엔진 : Interpreter & JIT Compiler**
 
+- Interpreter는 바이트 코드를 한 줄씩 읽기 때문에 실행이 느린 단점이 있었습니다.
+이러한 단점을 보완하기 위해 나온 것이 JIT(Just-In-Time) Compiler 입니다.
+ 
+- JIT Compiler는 인터프리터 방식으로 실행을 하다가
+적절한 시점에 바이트 코드 전체를 컴파일 하고 더 이상 인터프리팅 하지 않고 해당 코드를 직접 실행합니다.
 
+- JIT Compiler에 의해 해석된 코드는 캐시에 보관하기 때문에
+한 번 컴파일 된 후에는 빠르게 수행하는 장점 있습니다.
 
-StringBuffer/StringBuilder는 String과 다르게 동작합니다.
-
-문자열 연산 등으로 기존 객체의 공간이 부족하게 되는 경우,
-
-
-기존의 버퍼 크기를 늘리며 유연하게 동작합니다. StringBuffer와 StringBuilder 클래스가 제공하는 메서드는 서로 동일합니다.
-
-
-
-**두 클래스의 차이점은? 동기화 여부입니다.**
-
-- StringBuffer는 각 메서드별로 Synchronized Keyword가 존재하여, 멀티스레드 환경에서도 동기화를 지원.
-- 반면, StringBuilder는 동기화를 보장하지 않음.
-
-
-
-그렇기때문에 멀티스레드 환경이라면 값 동기화 보장을 위해 StringBuffer를 사용하고,
-
-
-단일스레드 환경이라면 StringBuilder를 사용하는 것이 좋습니다. 단일 스레드환경에서 StringBuffer를 사용한다고 문제가 되는 것은 아니지만, 동기화 관련 처리로 인해 StringBuilder에 비해 성능이 좋지 않습니다.
-
-
-
-<span style='background-color: red'> String은 짧은 문자열을 더할 경우 사용합니다. </span>
-
-<span style='background-color: red'> StringBuffer는 스레드에 안전한 프로그램이 필요할 때나, 개발 중인 시스템의 부분이 스레드에 안전한지 모를 경우 사용하면 좋습니다. </span>
-
-
-<span style='background-color: red'> StringBuilder는 스레드에 안전한지 여부가 전혀 관계 없는 프로그램을 개발할 때 사용하면 좋습니다. </span>
-
-
-
-
-JDK 1.5버전 이전에서는 문자열연산(+, concat)을 할때에는 조합된 문자열을 새로운 메모리에 할당하여 참조함으로 인해서 성능상의 이슈가 있었습니다. 그러나 JDK1.5 버전 이후에는 컴파일 단계에서 String 객체를 사용하더라도 StringBuilder로 컴파일 되도록 변경되었습니다. 그리하여 JDK 1.5 이후 버전에서는 String 클래스를 활용해도 StringBuilder와 성능상으로 차이가 없어졌습니다. <span style='background-color: blue'> 하지만 반복 루프를 사용해서 문자열을 더할 때에는 객체를 계속 추가한다는 사실에는 변함이 없습니다.</span> 그러므로 String 클래스를 쓰는 대신, 스레드와 관련이 있으면 StringBuffer를, 스레드 안전 여부와 상관이 없으면 StringBuilder를 사용하는 것을 권장합니다.
-
-
-
-단순히 성능만 놓고 본다면 연산이 많은 경우, <span style='background-color: blue'>StringBuilder > StringBuffer >>> String</span> 입니다.
-
-
-
-
-  
+- 반면, 처음 시작할 때에는 변환 단계를 거쳐야 하므로 성능이 느리다는 단점이 존재합니다.
+ 
+ 하지만, CPU 성능이 점점 좋아지고 JDK의 성능 개선도 많이 이루어졌기 때문에 단점도 많이 개선되었습니다.
