@@ -63,4 +63,7 @@ timezone: Asia/Seoul
 url: "https://funnykyeon.github.io" 
 baseurl: ""
 
+category_archive:
+  type: liquid
+  path: /categories/
 
