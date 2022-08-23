@@ -22,7 +22,7 @@ subtitle                 : "version 1.0"
 name                     : "권기원(Kwon Kiwon)"
 description              : "."
 url                      : https://funnykyeon.github.io
-baseurl                  : "/funnykyeon"
+baseurl                  : ""
 repository               : "funnykyeon/comment" #https://github.com/funnykyeon/funnykyeon.github.io.git
 teaser                   : "/assets/images/logo.png"
 logo                     : "/assets/images/logo.png"
