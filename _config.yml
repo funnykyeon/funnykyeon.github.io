@@ -20,9 +20,9 @@ title                    : "Trial and Error: Fail your way to Success"
 title_separator          : "-"
 subtitle                 : "version 1.0"
 name                     : "권기원(Kwon Kiwon)"
-description              : "."
+description              : ""
 url                      : https://funnykyeon.github.io
-baseurl                  : "/funnykyeon/"
+baseurl                  : ""
 repository               : "funnykyeon/comment" #https://github.com/funnykyeon/funnykyeon.github.io.git
 teaser                   : "/assets/images/logo.png"
 logo                     : "/assets/images/logo.png"
