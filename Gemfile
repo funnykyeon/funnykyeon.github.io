@@ -12,3 +12,7 @@ gem "jekyll-include-cache", "~> 0.2.1"
 
 
 gem "github-pages", "~> 227"
+
+gem "tzinfo-data", "~> 1.2022"
+
+gem "wdm", "~> 0.1.1"
