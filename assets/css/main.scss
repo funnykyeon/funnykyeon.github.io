@@ -5,6 +5,7 @@ search: false
 
 @charset "utf-8";
 
-
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
+@import "assets/css/bootstrap/bootstrap";
+@import "assets/css/minima/*";
 @import "minimal-mistakes"; // main partials
