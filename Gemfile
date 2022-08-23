@@ -16,3 +16,5 @@ gem "github-pages", "~> 227"
 gem "tzinfo-data", "~> 1.2022"
 
 gem "wdm", "~> 0.1.1"
+
+gem "sass", "~> 3.7"
