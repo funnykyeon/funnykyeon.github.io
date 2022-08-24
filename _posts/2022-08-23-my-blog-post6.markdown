@@ -2,7 +2,7 @@
 title: "class,instance,method"
 last_modified_at: 2022-08-22T14:34:36-05:00
 categories: 
-    -Java
+    Java
 ---
 
 ## 클래스, 인스턴스, 메소드
@@ -10,36 +10,39 @@ categories:
 - 1) 클래스(Class)란?
     - **클래스**는 표현하고자 하는 대상의 공통 속성을 한 군데에 정의해 놓은 것이라고 할 수 있다. 즉, 클래스는 객체의 속성을 정의해 놓은것
     - 또한 클래스 내부의 정보를 **멤버 변수**라라고 한다
+
 ![](https://velog.velcdn.com/cloudflare/funnykyeon/490e2662-271d-4cd6-94de-8be964fe56e3/image.png)
+
    - 여기 붕어빵 틀이 있다! 붕어빵 틀은 붕어빵을 만드는데 이용이 됨. 클래스랑 인스턴스도 이와 마찬가지로 생각하면 된다. 붕어빵을 만드는 틀이 곧 **클래스**가 되며 붕어빵 틀로부터 만들어진 붕어빵이 곧 **인스턴스**가 되는 것!
 
 - **인스턴스(Instance)**란?
    - 어떠한 클래스로부터 만들어진 객체를 그 클래스의 **인스턴스**라고 한다.
                       
-- **인스턴스 - Phone, Main 클래스**             
-```java
-class Phone {
-    String model;
-    String color;
-    int price;
-}
+- **인스턴스 - Phone, Main 클래스**  
 
-public class Main {
-    public static void main(String[] args) {
-        Phone galaxy = new Phone(); 
-        galaxy.model = "Galaxy10";
-        galaxy.color = "Black";
-        galaxy.price = 100;
-        iphone.model = "iPhoneX";
-        iphone.color = "Black";
-        iphone.price = 200;
+  ```java
+  class Phone {
+      String model;
+      String color;
+      int price;
+  }
+
+  public class Main {
+      public static void main(String[] args) {
+          Phone galaxy = new Phone(); 
+          galaxy.model = "Galaxy10";
+          galaxy.color = "Black";
+          galaxy.price = 100;
+          iphone.model = "iPhoneX";
+          iphone.color = "Black";
+          iphone.price = 200;
 
 
-        System.out.println("철수는 이번에 " + galaxy.model + galaxy.color + " + 색상을 " + galaxy.price + "만원에 샀다.");
-        System.out.println("영희는 이번에 " + iphone.model + iphone.color + " + 색상을 " + iphone.price + "만원에 샀다.");
-    }
-}
-```    
+          System.out.println("철수는 이번에 " + galaxy.model + galaxy.color + " + 색상을 " + galaxy.price + "만원에 샀다.");
+          System.out.println("영희는 이번에 " + iphone.model + iphone.color + " + 색상을 " + iphone.price + "만원에 샀다.");
+      }
+  }
+  ```    
 - Phone라는 클래스에는 핸드폰의 모델, 색깔, 가격에 대한 정보가 담겨져 있다. 이를 활용하여 model, color, price라는 같은 속성을 가진 galaxy, iphone으로 각기 다른 인스턴스를 만들었다.
 <aside>
 👉 인스턴스의 멤버변수에 접근할 때는 `[생성된 인스턴스.멤버변수]` 의 형식을 사용하면 된다.

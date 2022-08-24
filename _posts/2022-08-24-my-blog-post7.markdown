@@ -1,5 +1,5 @@
 ---
-title: "class,instance,method"
+title: "Mac에서 zulu(OpenJDK 17) 설치 및 IntelliJ설정"
 last_modified_at: 2022-08-23T16:14:36-05:00
 categories: 
     -Java, IntelliJ
@@ -46,8 +46,6 @@ $ brew search zulu
 $ brew tap homebrew/cask-versions
 ```
 <br>
-
-</br>
 
 자바 8과 10을 사용하기 때문에 zulu와 zulu8을 설치하도록 하겠다. 자바8을 원하지 않는 분은 zulu만 설치하면 된다.
 ```

@@ -2,7 +2,7 @@
 title: "OSI 7 Layer"
 last_modified_at: 2022-08-24T09:31:36-05:00
 categories: 
-    -CS
+    CS
 ---
 
 
@@ -50,8 +50,8 @@ categories:
 
 * ② 상위레벨(전송 계층, 세션 계층, 표현 계층, 응용 계층)
     *통신처리 기능을 담당하는 계층으로 파일, 데이터베이스에 대한 엑세스 작업을 수행
-    
-![](https://images.velog.io/images/funnykyeon/post/b2e41125-2e8a-42d2-bd31-a0fbe5e6e85d/1.png)![](https://images.velog.io/images/funnykyeon/post/09bcc527-72c4-44cc-96d0-1d87c532ecbb/2.png)
+    ![](https://images.velog.io/images/funnykyeon/post/b2e41125-2e8a-42d2-bd31-a0fbe5e6e85d/1.png)
+    ![](https://images.velog.io/images/funnykyeon/post/09bcc527-72c4-44cc-96d0-1d87c532ecbb/2.png)
  
  
  
