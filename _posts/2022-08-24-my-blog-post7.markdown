@@ -36,7 +36,7 @@ zulu를 사용하여 OpenJDK를 설치할것이며 zulu는 100% 오픈 소스이
 ```
 $ brew update && brew upgrade
 ```
-
+  
 zulu를 검색하게 되면 다음 사진과 같은 결과가 나온다.
 ```
 $ brew search zulu
