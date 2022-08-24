@@ -2,7 +2,7 @@
 title: "String, StringBuilder, StringBuffer 차이점과 장단점"
 last_modified_at: 2022-08-20T18:23:36-05:00
 categories: 
-    -Java
+    Java
 ---
 StringBuffer와 StringBuilder
 

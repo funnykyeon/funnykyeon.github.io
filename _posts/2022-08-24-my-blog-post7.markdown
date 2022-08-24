@@ -10,11 +10,11 @@ categories:
 * Mac OS
 * HomeBrew ([설치방법 링크](https://velog.io/@funnykyeon/Homebrew-%EC%84%A4%EC%B9%98))
 
-> ## JDK란 무엇일까요?
+> ## JDK란 무엇일까?
 
 JDK(Java Development kit) - Java 애플릿 및 응용 프로그램을 작성하려면 이 JDK 같은 개발 키트가 필요하다. JDK는 JRE(Java Runtime Environment)와 Java 컴파일러, JVM(Java Virtual Machine)을 포함하고 있는 소프트웨어 패키지이다.
 
-> ## Oracle JDK 와 OpenJDK 중 무엇을 택해야할까요?
+> ## Oracle JDK 와 OpenJDK 중 무엇을 택해야할까?
 
 Java 애플리케이션을 실행하기 위해서는 JVM이 필요하고 컴파일하기 위해서는 JDK가 필요하다.
 일반적으로 JDK를 설치하면 JVM(Hotspot이라고도 표현, Java 기술의 핵심)도 함께 설치된다.
@@ -45,7 +45,7 @@ $ brew search zulu
 ```
 $ brew tap homebrew/cask-versions
 ```
-<br>
+
 
 자바 8과 10을 사용하기 때문에 zulu와 zulu8을 설치하도록 하겠다. 자바8을 원하지 않는 분은 zulu만 설치하면 된다.
 ```

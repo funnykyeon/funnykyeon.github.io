@@ -2,12 +2,12 @@
 title: "Java 컴파일 과정"
 last_modified_at: 2022-08-21T19:49:36-05:00
 categories: 
-    -Java
+    Java
 ---
 JAVA Compiler
 
 
-![](https://velog.velcdn.com/images/funnykyeon/post/1eee9ce5-01eb-42c9-a6e0-ffac022970bd/image.png)
+  ![](https://velog.velcdn.com/images/funnykyeon/post/1eee9ce5-01eb-42c9-a6e0-ffac022970bd/image.png)
 
 
 > ## 자바의 호환성
