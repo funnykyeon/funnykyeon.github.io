@@ -291,7 +291,7 @@ defaults:
       author_profile: true
       read_time: false
       show_date: true
-      comments: # true
+      comments: true
       share: true
       related: true
   # _pages                      : 해당 하단 영역이 새로 추가되었습니다.
