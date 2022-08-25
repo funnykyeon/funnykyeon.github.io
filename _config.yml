@@ -18,7 +18,7 @@ minimal_mistakes_skin    : "contrast" # "air", "aqua", "contrast", "dark", "dirt
 locale                   : "ko-KR"
 title                    : "Trial and Error: Fail your way to Success"
 title_separator          : "-"
-subtitle                 : "version 1.0"
+# subtitle                 : "version 1.0"
 name                     : "Kwon Kiwon"
 description              : ""
 url                      : https://funnykyeon.github.io
