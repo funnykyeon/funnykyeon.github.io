@@ -221,6 +221,7 @@
   
       &.site-title {
         margin-left: 0;
+        font-family: $cute;
       }
     }
   
@@ -471,7 +472,7 @@
       color: inherit;
       font-size: $type-size-3;
       font-family: $cute;
-      // color: mix(#fff,$primary-color,80%); 네비게이션쪽 컬러
+      color: mix(rgb(64, 64, 64),$primary-color,80%); 네비게이션쪽 컬러
   
       &:hover {
         text-decoration: underline;
@@ -517,7 +518,7 @@
     margin: 0;
     padding: 0.5rem 0.75rem;
     font-family: $sans-serif-narrow;
-    font-size: $type-size-5;
+    font-size: $type-size-4;
     font-weight: bold;
   }
   

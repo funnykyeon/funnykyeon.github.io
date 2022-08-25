@@ -1,11 +1,11 @@
 ---
 title: "IntelliJ could not find or load main class error"
-date: 2022-08-17
-last_modified_at: 2022-08-17
+date: 2022-08-18
+last_modified_at: 2022-08-18
 categories: 
   - Error
 tags: 
-  - [IntelliJ]
+  - [IntelliJ,Error]
 ---
 
 Intellij Spring 'Could not find or load main class' Caused by 'java.lang.ClassNotFoundException'

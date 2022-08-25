@@ -1,7 +1,7 @@
 ---
 title: "class,instance,method"
-date: 2022-08-22
-last_modified_at: 2022-08-22
+date: 2022-08-23
+last_modified_at: 2022-08-23
 toc: true
 toc_sticky: true
 categories: 

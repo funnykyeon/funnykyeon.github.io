@@ -1,13 +1,13 @@
 ---
 title: "OSI 7 Layer"
-date: 2022-08-24
-last_modified_at: 2022-08-24
+date: 2022-08-25
+last_modified_at: 2022-08-25
 toc: true
 toc_sticky: true
 categories: 
   - Cs
 tags:
-  - [Network]
+  - [Network,Cs]
 ---
 
 

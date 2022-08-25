@@ -1,13 +1,13 @@
 ---
 title: "Mac에서 zulu(OpenJDK 17) 설치 및 IntelliJ설정"
-date: 2020-08-23
-last_modified_at: 2022-08-23
+date: 2022-08-24
+last_modified_at: 2022-08-24
 toc: true
 toc_sticky: true
 categories: 
   - Java
 tags:
-  - [IntelliJ]
+  - [IntelliJ,JDK]
 ---
 
 > ## Open JDK 설치환경

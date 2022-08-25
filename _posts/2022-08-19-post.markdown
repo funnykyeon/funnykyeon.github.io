@@ -1,11 +1,11 @@
 ---
 title: "Chrome bookmarks.bak 파일을 html로 변환하는 방법"
-date: 2022-08-18
-last_modified_at: 2022-08-18
+date: 2022-08-19
+last_modified_at: 2022-08-19
 categories: 
   - Error
 tags: 
-  - [CORS,Chrome]
+  - [CORS,Chrome,Error]
 ---
 
 Chrome cors disable 설정 중 초기화된 북마크
