@@ -23,7 +23,7 @@ name                     : "Kwon Kiwon"
 description              : ""
 url                      : https://funnykyeon.github.io
 baseurl                  : 
-repository               : "funnykyeon/funnykyeon.github.io" #https://github.com/funnykyeon/funnykyeon.github.io.git
+repository               : "funnykyeon/comment" #https://github.com/funnykyeon/funnykyeon.github.io.git
 teaser                   : "/assets/images/logo.png"
 logo                     : "/assets/images/logo.png"
 masthead_title           : "Trial and Error: Fail your way to Success"
