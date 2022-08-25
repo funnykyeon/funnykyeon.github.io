@@ -1,8 +1,13 @@
 ---
 title: "Java 컴파일 과정"
-last_modified_at: 2022-08-21T19:49:36-05:00
+date: 2022-08-21
+last_modified_at: 2022-08-21
+toc: true
+toc_sticky: true
 categories: 
-    Java
+  - Java
+tags: 
+  - [Java]
 ---
 JAVA Compiler
 

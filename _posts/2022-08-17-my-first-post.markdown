@@ -1,8 +1,12 @@
 ---
 title:  "깃허브 블로그 완성"
-last_modified_at: 2022-08-16T21:03:36-05:00
+date: 2022-08-16
+last_modified_at: 2022-08-16
+
 categories: 
-    MyStory
+  - Etc
+tags: 
+  - [잡담]
 ---
 나는 개발자가 되고 싶어서 하던 사업을 접었다.
 

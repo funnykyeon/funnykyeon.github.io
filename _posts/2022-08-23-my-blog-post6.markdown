@@ -1,8 +1,13 @@
 ---
 title: "class,instance,method"
-last_modified_at: 2022-08-22T14:34:36-05:00
+date: 2022-08-22
+last_modified_at: 2022-08-22
+toc: true
+toc_sticky: true
 categories: 
-    Java
+  - Java
+tags:
+  - [Java]
 ---
 
 ## 클래스, 인스턴스, 메소드

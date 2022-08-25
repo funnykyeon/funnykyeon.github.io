@@ -1,8 +1,13 @@
 ---
 title: "오버로딩과 오버라이딩의 차이점"
-last_modified_at: 2022-08-19T23:47:36-05:00
+date: 2022-08-19
+last_modified_at: 2022-08-19
+toc: true
+toc_sticky: true
 categories: 
-    Java
+  - Java
+tags:
+  - Java
 ---
 
 오버로딩과 오버라이딩에 대해 다시한번 짚고 가려고한다.
