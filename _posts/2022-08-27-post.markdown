@@ -1,0 +1,31 @@
+---
+title: "Typeerror: Object of type bytes is not JSON serializable Error"
+date: 2022-08-27
+last_modified_at: 2022-08-27
+categories: 
+  - Error
+tags:
+  - [Python]
+---
+
+
+# Typeerror: Object of type bytes is not JSON serializable Error
+
+미니프로젝트 올릴당시
+PyCharm에선 오류문제가 없던 로그인 api가 gitbash에서 오류가 나기시작했다  
+![](https://images.velog.io/images/funnykyeon/post/31020378-335b-4fa0-b097-c681f7c388c9/1646357274.jpg)
+사진하단을 보면 Typeerror: Object of type bytes is not JSON serializable.  
+
+gitbash에서 파이썬 버전 전부 변경도 해보고 구글에 해결법 모두 적용헸지만  
+전부 실패 밤8시에 오기생겨서 해결하고 잔다는 마음으로 진행하다보니 아침 8시🤣  
+
+결과적으로 간단했다😂  
+
+PyCharm에선 token 부분에 decode할필요가 없었는데  
+git bash에선 반드시 넣어야했다.  
+git bash에서 UTF-8 언어 추가로도 넣어보고 했었는데 안되더니.  
+![](https://images.velog.io/images/funnykyeon/post/a6a21789-220a-4506-b2d1-729b09be4736/image.png)
+이렇게 코드변경하니 바로 해결  
+
+물론 
+PyCharm에선 .decode('utf-8')을 제거해줘야 됩니다!

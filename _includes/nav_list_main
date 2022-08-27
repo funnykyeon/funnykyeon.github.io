@@ -29,7 +29,7 @@
                         <li><a href="/categories/spring" class="">Spring ({{category[1].size}})</a></li>
                     {% endif %}
                 {% endfor %}
-            </ul>
+            </ul>    
         <span class="nav__sub-title">Etc</span>
             <ul>
                 {% for category in site.categories %}
