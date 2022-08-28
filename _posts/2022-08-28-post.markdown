@@ -1,0 +1,27 @@
+---
+title: "IntelliJ lombok 적용되지않는 에러"
+date: 2022-08-28
+last_modified_at: 2022-08-28
+categories: 
+  - Error
+tags:
+  - [IntelliJ]
+---
+
+
+# cannot find symbol error
+
+금일 코딩하기위해 intelliJ 실행하였는데 lombok이 적용되지않아 당황했다.  
+아래와 같은 현상이라 build.gradle 확인 하였으나 전혀 이상이 없었다.
+
+![](https://user-images.githubusercontent.com/99777315/187063570-07e19cb2-b413-4269-afdf-0997972c40c6.png)
+
+구글링에 대한 답변글론  
+1. lombok 플러그인 설치 → 설치되어있다.  
+2. rebuild → 5번 정도 시도해보았지만 변화는 없었다.  
+3. update → 이미 최신버전이였다.  
+4. IntelliJ → preference → Build,Execution,Deployment → Compiler → Annotation Processors ⇢ Enable annotation processing 체크 
+   ->IntelliJ → File → Invalidate Caches / Restart → Invalidate and Restart  
+   성공 lombok이 정상적으로 적용되는걸 확인할수있었다.  
+
+![](https://user-images.githubusercontent.com/99777315/187063894-80d96d26-f69c-4445-8e8a-7e7c80dd955e.png)  
