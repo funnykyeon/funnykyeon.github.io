@@ -1,0 +1,32 @@
+---
+title: "조회 대상 빈이 2개 이상일 때 해결방법"
+date: 2022-08-31
+last_modified_at: 2022-08-31
+categories: 
+  - Spring
+tags:
+  - [lombok,Annotation]
+---
+
+
+
+> ## @Autowired 필드 명, @Qualifier, @Primary
+
+조회 대상 빈이 2개 이상일 때 해결 방법
+- @Autowired 필드 명 매칭
+    - 타입 매칭
+    - 타입 매칭의 결과가 2개 이상일 때 필드 명, 파라미터 명으로 빈 이름 매칭
+- @Qualifier -> @Qualifier끼리 매칭 -> 빈 이름 매칭 
+    - @Qualifier끼리 매칭
+    - 빈 이름 매칭
+    - NoSuchBeanDefinitionException 예외 발생
+- @Primary 사용
+    - @Primary 는 우선순위를 정하는 방법이다. @Autowired 시에 여러 빈이 매칭되면 @Primary 가 우선권을 가진다.
+
+
+
+
+@Primary 는 기본값 처럼 동작하는 것이고, @Qualifier 는 매우 상세하게 동작한다.  
+이런 경우 어떤 것이 우선권을 가져갈까? 스프링은 자동보다는 수동이,  
+넒은 범위의 선택권 보다는 좁은 범위의 선택권이 우선 순위가 높다.  
+따라서 여기서도 @Qualifier 가 우선권이 높다.
