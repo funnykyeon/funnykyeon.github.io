@@ -1,0 +1,60 @@
+---
+title: "Amazon EC2 인스턴스 TimeZone 변경"
+date: 2022-08-30
+last_modified_at: 2022-08-30
+categories: 
+  - AWS
+tags:
+  - [Amazon,EC2]
+---
+
+
+
+> ## Timezone ?
+
+리눅스를 새로 설치하고 나면 (AWS EC2 AMI도 Linux와 동일)시간대(Timezone)을 맞추지 않으면, 리눅스의 date가 KST(한국시간)으로 설정되어있지 않다.
+이럴경우 한국 표준시인 KST로 변경해주어야 한다.
+
+>## KST로 변경방법 1
+
+- **root 계정으로 변경**   
+  ```
+  sudo su-root
+  ```
+- **아래 명령을 순서대로 진행한다.**   
+  ```
+  rm /etc/localtime
+
+
+  ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+  ```
+- date 명령어를 통해 현재 시간이 제대로 설정된 것을 확인할 수 있다.  
+  ![](https://velog.velcdn.com/images/funnykyeon/post/d55a7894-62dd-4232-afa9-14e1572aa0ef/image.png)
+
+
+>## KST로 변경방법 2
+
+- 아래명령어를 통해서 변경한다.
+```
+sudo dpkg-reconfigure tzdata
+```
+
+- 명령어를 실행하면 아래와 같은 화면을 볼 수 있다.  
+  ![](https://velog.velcdn.com/images/funnykyeon/post/fb9293f0-e1ea-4dd1-93fb-27673e540a2e/image.png){: width="60%" height="60%"}
+
+<code>Asia</code> -&gt; <code>Seoul</code>을 찾아서 선택하면 된다.
+
+- 선택 완료한 후 빠져 나오면 아래와 같이 잘 변경 되었다는 문구를 확인하실 수 있다.  
+  ![](https://velog.velcdn.com/images/funnykyeon/post/57aabb38-5484-4241-8c38-552242de24b7/image.png)
+
+- 다시 <code>date</code> 명령어를 이용하여 확인하면 변경된 Timezone을 확인할 수 있다.  
+  ![](https://velog.velcdn.com/images/funnykyeon/post/b426dc44-e624-4061-b577-07deac71bdf7/image.png)
+
+
+
+> # 주의!
+Timezone을 변경하였다면 EC2 인스턴스를 재부팅을 한다.  
+Timezone이 변경되었음에도 불구하고 재부팅하기 전까지 시간을 이용하는 로직이 원하는대로 동작하지 않아  
+EC2 재부팅을 해보니 재부팅 이후부터 변경된 timezone이 적용되었다.
+
+   
