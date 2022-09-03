@@ -1,0 +1,83 @@
+---
+title: "Spring Boot 와 Swagger3.0"
+date: 2022-09-03
+last_modified_at: 2022-09-03
+categories: 
+  - Spring
+tags:
+  - [Swagger]
+---
+
+
+## Swagger란?
+
+Swagger 는 OAS(Open Api Specification) 이다.  
+
+개발자들의 필수 과제인 API 문서화를 쉽게 할 수 있도록 도와주며, 파라미터를 넣어서 실제로 어떤 응답이 오는지 테스트도 할 수 있다.  
+
+개발을 진행하는데 필수 과제인 API 문서화를 쉽게 자동화 할 수 있도록 도와주고, 페이지에서 파라미터를 넣어서 실제 응답을 테스트 할 수도 있다.  
+
+
+## 테스트를 해보자
+
+1. 아래 내용을 build.gradle에 추가하자
+```java
+implementation "io.springfox:springfox-boot-starter:3.0.0"
+implementation "io.springfox:springfox-swagger-ui:3.0.0"
+```
+<br>
+
+2. CoConfiguration 클래스 추가
+```java
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.OAS_30)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build();
+    }
+}
+```
+
+    * Docket: Swagger 설정의 핵심이 되는 Bean
+    * useDefaultResponseMessages: Swagger 에서 제공해주는 기본 응답 코드 (200, 401, 403, 404). true 로 설정하면 기본 응답 코드를 노출
+    * apis: api 스펙이 작성되어 있는 패키지 (Controller) 를 지정
+    * paths: apis 에 있는 API 중 특정 path 를 선택    
+<br>
+
+3. 테스트용 Controller 추가
+```java
+@RestController
+public class BasicController {
+
+    @GetMapping("/api/hello1")
+    public String hello1() {
+        return "hello";
+    }
+
+    @GetMapping("/api/hello2")
+    public String hello2(@RequestParam String param) {
+        return param;
+    }
+}
+```
+<br>
+
+4. 오류 방지 추가  
+Spring boot 2.6버전 이후에 spring.mvc.pathmatch.matching-strategy 값이 ant_apth_matcher에서 path_pattern_parser로 변경되면서 몇몇 라이브러리(swagger포함)에 오류가 발생한다고 한다.  
+**application.properties** 에 아래처럼 추가해주면 된다고 한다.  
+```java
+spring.mvc.pathmatch.matching-strategy = ANT_PATH_MATCHER
+```
+<br>
+
+5. Swagger 접속  
+swagger 3.x 버전과 2.x 버전의 접속 URL이 약간 다르다
+* 3.x : [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+* 2.x : [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)  
+  ![image](https://user-images.githubusercontent.com/99777315/188268530-63d5994d-3559-4b8e-ac4f-6b710ec5df62.png)
+  정상적으로 API 정보를 가져오는것을 볼 수 있다.
