@@ -1,0 +1,45 @@
+---
+title: "Homebrew 설치"
+date: 2022-09-04
+last_modified_at: 2022-09-04
+categories: 
+  - CS
+tags:
+  - [Homebrew]
+---
+
+
+> ## Homebrew란?
+
+
+* 맥OS 용 패키지 관리자 — 홈브류(Homebrew)
+![](https://images.velog.io/images/funnykyeon/post/16ee1f51-b6dc-4df0-a941-f69357a79f9c/image.png){: width="87%" height="87%"}  
+맥OS용 패키지 관리자 [Homebrew 공식웹사이트](https://brew.sh/index_ko)  
+<br>
+Homebrew는 맥스 호웰Hax Howell이 만든 맥OSmacOS 용 패키지 관리 애플리케이션이다.  
+홈브류는 루비로 개발되고 있으며, 2009년 처음 릴리스되었다.  
+2019년 2월에 2.0이 릴리즈 되었으며, 2021년 2월 5일 애플 실리콘을 공식 지원하는 3.0.0 버전이 릴리스되었다.  
+홈브류 이전에도 커맨드라인에서 사용가능한 맥OS 용 패키지 관리자들이 있었지만, 현재는 홈브류가 사실상 표준으로 자리잡았다.  
+맥OS에서 프로그래밍을 하는 프로그래머들에게는 거의 필수적인 도구이다.  
+ <span style="color:slateblue">* apt-get</span> 등 리눅스의 패키지 관리자들과 사용법이 비슷해서 쉽게 사용할 수 있다는 장점이 있다.  
+홈브류는 주로 커맨드라인 도구나 시스템 패키지들을 설치하는 데 사용하지만,  
+캐스크Cask 확장을 통해 GUI 애플리케이션 설치에도 사용할 수 있다.  
+기본적으로 맥OS용 패키지 관리자이지만, 리눅스나 윈도우의 WSL도 지원하고 있다.  
+
+> ## 맥OS에서 Homebrew 설치하기
+
+
+* 1.터미널을 키고 brew -v 를 입력한다.
+![](https://images.velog.io/images/funnykyeon/post/5c80788d-c6b2-4c0d-9699-e4323ffa81f7/image.png)
+
+
+
+* 2.[Homebrew 공식웹사이트](https://brew.sh/index_ko) 에 들어가서 빨간체크 버튼 클릭 후 터미널에 붙여넣기 한다.
+![](https://images.velog.io/images/funnykyeon/post/089db4ee-20c0-42df-b103-1140788755c0/image.png)
+
+
+
+* 3.설치가 완료되었다면 다시 brew -vfmf 입력하여 버전정보를 확인한다.
+![](https://images.velog.io/images/funnykyeon/post/66e64f76-50e2-46b6-95b8-298441dd240d/image.png)
+
+* 4.위와 같이 나온다면 설치완료
