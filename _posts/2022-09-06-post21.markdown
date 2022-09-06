@@ -1,0 +1,54 @@
+---
+title: "Ubuntu 18.04 yum Repos 없을때"
+date: 2022-09-06
+last_modified_at: 2022-09-06
+categories: 
+  - AWS
+tags:
+  - [ubuntu,yum]
+---
+
+
+> ## ubuntu에서 yum 설치하였는데 repos가 없다
+
+yum install *** 혹은 yum update를 하면 아무것도 존재하지 않는다고 에러메세지를 보여준다.  
+yum는 repository url 을 읽어서, 그 url에 있는 파일들을 다운로드 후 설치해주는 프로그램이다.  
+repository url 이 없다면 아무것도 할 수 없다.  
+  
+- sudo su 명령어로 ubuntu@주소 -> root@주소 로 유저전환을 해준다.  
+  root에서 다시 유저로 돌아오고 싶다면 su - $username 명령어를 입력해준다.  
+
+- cd /etc/yum/repos.d 로 들어가서 vi demo.repo 만들어준다.  
+
+- daum.repo 가 새로 생성 후 안에 
+  ```
+  [base]
+  name=CentOS-$releasever - Base
+  baseurl=http://ftp.daum.net/centos/7/os/$basearch/
+  gpgcheck=1
+  gpgkey=http://ftp.daum.net/centos/RPM-GPG-KEY-CentOS-7
+
+  [updates]
+  name=CentOS-$releasever - Updates
+  baseurl=http://ftp.daum.net/centos/7/updates/$basearch/
+  gpgcheck=1
+  gpgkey=http://ftp.daum.net/centos/RPM-GPG-KEY-CentOS-7 
+
+  [extras]
+  name=CentOS-$releasever - Extras
+  baseurl=http://ftp.daum.net/centos/7/extras/$basearch/
+  gpgcheck=1
+  gpgkey=http://ftp.daum.net/centos/RPM-GPG-KEY-CentOS-7 
+
+  [centosplus]
+  name=CentOS-$releasever - Plus
+  baseurl=http://ftp.daum.net/centos/7/centosplus/$basearch/
+  gpgcheck=1
+  gpgkey=http://ftp.daum.net/centos/RPM-GPG-KEY-CentOS-7 
+  ```
+  이 내용을 붙여 넣으면 된다.
+
+  파일이름은 꼭 demo.repo가 아니여도 된다.
+  확장자인 .repo만 지켜주면 된다.
+
+  
