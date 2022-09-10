@@ -5,7 +5,7 @@ last_modified_at: 2022-09-08
 categories: 
   - CS
 tags:
-  - [DiskScheduling)]
+  - [DiskScheduling]
 ---
 
 
