@@ -1,0 +1,47 @@
+---
+title: "Jenkins build error"
+date: 2022-09-12
+last_modified_at: 2022-09-12
+categories: 
+  - Error
+tags:
+  - [Jenkins,Gururu,CI/CD]
+---
+오늘은 Gururu프로젝트 중 먼저 CI/CD환경 구축하기위해 삽질하고있었다.  
+
+># 우선 CI/CD란 
+- CI : 지속적인 통합(Continuous Integration) / 빌드/테스트 자동화 과정
+- CD : 지속적인 서비스 제공(Continuous Delivery) / 지속적인 배포(Continuous Deployment)  
+
+그전에 GithubAction을 통한 구축은 해보았으나 CI만 구축한 반쪽짜리 였다.  
+이번 프로젝트는 CD까지 적용하기위해 Blue-Green 방식으로 진행하여 CI/CD구축을 도전중이다.  
+익숙하지못한 리눅스의 자잘한 에러들은 다행히도 잘해결 되었다.  
+이제 잘되겠지? 라고 생각한순간 이것이 플래그였던거같다.  
+WebHook를 통해 Jenkins의 Build 트리거를 설정해놓고 Main에 Push후 기분좋게 기다리고있는데
+빌드실패가 아닌가?  
+로그를 확인해보니 설정할때만 해도 잘 나오던 cicd-gururu-codedeploy-jenkins 배포그룹을 찾을수 없다고 한다.  
+AWS쪽 설정 에러 같기도해서 내일 다시 확인해보려고한다.
+
+
+```
+BUILD SUCCESSFUL in 49s
+7 actionable tasks: 7 executed
+Failed CodeDeploy post-build step; exception follows.
+Cannot find deployment group named 'cicd-gururu-codedeploy-jenkins'
+java.lang.IllegalArgumentException: Cannot find deployment group named 'cicd-gururu-codedeploy-jenkins'
+	at com.amazonaws.codedeploy.AWSCodeDeployPublisher.verifyCodeDeployApplication(AWSCodeDeployPublisher.java:298)
+	at com.amazonaws.codedeploy.AWSCodeDeployPublisher.perform(AWSCodeDeployPublisher.java:226)
+	at jenkins.tasks.SimpleBuildStep.perform(SimpleBuildStep.java:123)
+	at hudson.tasks.BuildStepCompatibilityLayer.perform(BuildStepCompatibilityLayer.java:80)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:818)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.performAllBuildSteps(AbstractBuild.java:767)
+	at hudson.model.Build$BuildExecution.post2(Build.java:179)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.post(AbstractBuild.java:711)
+	at hudson.model.Run.execute(Run.java:1924)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:44)
+	at hudson.model.ResourceController.execute(ResourceController.java:107)
+	at hudson.model.Executor.run(Executor.java:449)
+ERROR: Step ‘Deploy an application to AWS CodeDeploy’ failed: null
+Finished: FAILURE
+```
