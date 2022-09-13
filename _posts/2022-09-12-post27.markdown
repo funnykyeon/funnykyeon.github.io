@@ -45,3 +45,10 @@ java.lang.IllegalArgumentException: Cannot find deployment group named 'cicd-gur
 ERROR: Step ‘Deploy an application to AWS CodeDeploy’ failed: null
 Finished: FAILURE
 ```
+
+
+
+2022.09.13 해결!
+cicd-gururu-codedeploy-jenkins를 찾을수 없다는 문제였는데
+CodeDeploy에 배포그룹명 확인해보니 오타였다..
+뭔가 문제가 생기면 오타부터 확인해봐야겠다 

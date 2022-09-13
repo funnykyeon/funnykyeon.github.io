@@ -1,0 +1,57 @@
+---
+title: "CodeDeploy 배포 실패"
+date: 2022-09-13
+last_modified_at: 2022-09-13
+categories: 
+  - Error
+tags:
+  - [Jenkins,Gururu,CI/CD,CodeDeploy]
+---
+어제 어이없는 실수로 나온 빌드배포 실패를 해결 후 다시 차근차근 진행 하고있었다.  
+빌드 후 S3에 업로드 까지 확인하고 CodeDeploy에 가서 대기중에 실패가 떠버렸다.  
+에러메세지는  
+![image](https://user-images.githubusercontent.com/99777315/189932868-8c072490-9401-4491-819a-68f8dcc0f699.png)
+
+번역하자면  
+"배포 구성에는 최소 1개의 정상 인스턴스가 필요하기 때문에 배포를 시작할 수 없다. 그치만 배포 그룹에는 1개의 인스턴스만 있다.  
+배포 구성 설정을 조정하여 필요한 정상 인스턴스 수를 줄이거나 이 배포 그룹의 인스턴스 수를 늘린 다음 다시 시도해라" 이다.  
+내 입장에선 이해가 잘되지 않았다. 배포구성엔 정상 인스턴스 1개 만 설정 하였고 내 EC2 인스턴스는 정상 작동중이였다.  
+
+구글링하며 해결하려고 했으나 나와같은 에러가 발생한 사람은 많지않았다.  
+한국어,일본어,영어 등으로 구성된 사이트를 돌아다니면서 해결방법을 테스트 해보았다.  
+1. "cat /car/log/aws/codedeploy-agent/codedeploy-agent.log" 를 통해 로그를 확인부터 해보았다.
+	```
+	2022-09-13 23:28:29 INFO  [codedeploy-agent(3908)]: Version file found in /opt/codedeploy-agent/.version with agent version OFFICIAL_1.3.2-1902_rpm.
+	```
+	로그에선 문제를 발견할 수 없었다.
+
+2. "sudo service codedeploy-agent status" 로 codedeploy-agent의 상태를 확인해보았다.  
+	```
+	The AWS CodeDeploy agent is running as PID 3904
+	```
+	정상 작동 중 이였다.
+
+3. IAM 정책문제인거 같아 조금 건드려보았으나, AWSCodeDeployFullAccess,AmazonS3FullAccess 정상적으로 적용되고있었다.  
+
+4. "sudo service codedeploy-agent restart"로 codedeploy-agent 재시작후 인스턴스를 재시작했다.  
+	역시나 소용없었다.  
+
+5. 여기서 갑자기 생각이든건 내가 만든 배포 구성 이였다.
+	![image](https://user-images.githubusercontent.com/99777315/189930392-d09295da-b484-4611-b432-6aedb04fb030.png)  
+	<br>
+	위 이미지의 경고?가 갑자기 기억났다. 배포 성공 또는 실패 조건을 결정하는 규칙 세트라고  
+	<br>
+	![image](https://user-images.githubusercontent.com/99777315/189931238-12fbb82a-48df-444a-9419-6b351f68a086.png)
+	[AWS 링크 https://docs.aws.amazon.com/ko_kr/codedeploy/latest/userguide/instances-health.html](https://docs.aws.amazon.com/ko_kr/codedeploy/latest/userguide/instances-health.html)  
+	참고 후 최소 정상 호스트 값이 0이여도 된다고 하여 0으로 수정 후 다시 배포하였다.  
+
+	![image](https://user-images.githubusercontent.com/99777315/189932045-a96e23e6-6cda-4085-a3dc-7481bfccc77a.png)  
+	아름답다 드디어 해결되었다. 서버도 정상적으로 작동되는것을 확인했다.
+
+<br>
+
+이유는 이러했다.  
+![image](https://user-images.githubusercontent.com/99777315/189939442-574fd9f1-104c-48c2-980b-62d4721e0f26.png)  
+지정한 최소 인스턴수 수가 전체 인스턴스 수보다 작거나 같다면 배포에 즉시 실패 한다고한다.  
+무심결에 시도해본 방법이 위 이미지의 요구사항과 맞아 떨어졌다.  
+오늘느낀점은 문서에 다 나와있다. 보기 힘들다고 안보지말고 꼭 보자!
