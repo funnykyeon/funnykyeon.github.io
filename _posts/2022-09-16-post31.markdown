@@ -1,0 +1,69 @@
+---
+title: "AWS LINUX EC2 서버 접속하기(MacOS)"
+date: 2022-09-15
+last_modified_at: 2022-09-15
+toc: true
+toc_sticky: true
+categories: 
+  - AWS
+tags:
+  - [Linux,ssh]
+---
+
+># MacOS에서 Linux서버 접속해보자
+Mac에서는 보통 터미널**(iTerm2)**를 이용한다.
+맥OS에서 터미널로 AWS의 Linux 인스턴스로 접속하는 방법에 대해 알아보자.
+
+## ssh key 생성
+현재 유효한 키가 있는지 확인한다.
+```
+cat ~/.ssh/id_rsa.pub
+```
+키가 있다면 id_rsa.pub의 내용이 나올것이다.
+  * rm ~/.ssh을 통해 /.ssh를 지워주면 된다.  
+  예시)  
+  ![image](https://user-images.githubusercontent.com/99777315/190613170-9e01e871-4754-4c72-b5ab-c2e59b7ebebc.png)
+
+키가 없다면 cat: /경로명/id_rsa.pub: No such file or directory 라고 나올것이다.
+```
+cat: /경로명/id_rsa.pub: No such file or directory
+```
+  * ssh-keygen 명령어를 입력하면 어떤파일 키를 저장할건가?, 패스워드는 무엇으로 할것인가 나온다.  
+  따로 설정할필요없이 엔터 쳐서 넘어가면 **/Users/본인PC명/.ssh**폴더에 키가 생성될것이다.  
+  예시) 
+  ```
+  cd ~/.ssh
+  ls
+  id_rsa		id_rsa.pub	known_hosts	known_hosts.old
+  ```
+
+## AWS 인스턴스 생성시 만든 pem키 복사 및 설정
+1. pem파일을 ~/.ssh 경로에 복사 한다.
+  * ~/.ssh 디렉토리에 복사해놓으면 이후 ssh 실행 시 pem 키 파일을 자동으로 읽어 접속이 가능하다
+  ```
+  cp (pem 키의 경로/pem + 키의 파일명) ~/.ssh/
+  예시) cp /Users/desktop/test.pem ~/.ssh/
+  ```
+
+    * 복사하였다면 정상적으로 복사 되었는지 cd ~/.ssh 경로에서 ls 로 확인한다.  
+    * 마지막으로 ~/.ssh 경로에서 chmod 600 test.pem 명령어를 입력하여
+    pem키의 권한을 변경한다.
+2. 권한 변경 후 pem키 있는 경로에서 vim config로 config파일 생성 후 이미지와 같이 작성한다.  
+    (입력전환은 i버튼으로 가능하다.)  
+  ![image](https://user-images.githubusercontent.com/99777315/190615916-4d2883af-8158-43a3-a6f0-635bd39ec795.png)  
+  * Host : 나는 myserver라고 설정해놨다. 이후에 ssh 서버 접속시 ssh myserver 명령어로 ec2접속이 가능  
+  * HostName : EC2의 IP주소를 입력  
+  * User : User명 입력 나는 ec2-user라고 작성했다.  
+  * Identityfile : pem키가 있는 디렉토리/파일명 입력  
+    (모두 작성 했다면 esc누르고 :wq 입력하여 저장 종료 한다.)  
+  * chmod 700 config 명령어를 입력하여 권한을 부여한다.  
+
+## ssh로 EC2서버 접속
+* 위 과정이 끝났다면, Host에서 설정한 이름으로 접속하자
+  * ssh myserver -> yes  
+  ![image](https://user-images.githubusercontent.com/99777315/190622294-5bc36d5d-1749-4ea3-a085-e1988751028f.png)  
+  AWS연결이 완료된걸 볼 수 있다.  
+
+
+
+이 과정을 한번등록하면 일일이 명령어를 길게 치지않고 손쉽게 서버로 접속할수있다.
