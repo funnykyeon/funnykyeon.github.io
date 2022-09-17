@@ -1,0 +1,79 @@
+---
+title: "AWS EC2 Swap Memory Setting "
+date: 2022-09-16
+last_modified_at: 2022-09-16
+categories: 
+  - AWS
+tags:
+  - [Linux,SWAP]
+---
+
+># Swap Memory?  
+
+EC2 프리티어 t2.micro의 메모리 1GB 이다.  
+
+![image](https://user-images.githubusercontent.com/99777315/190859396-7a6bb53b-59e2-42b9-8fce-0f217cae4e9d.png)  
+
+이 작은 메모리로는 Jenkins가 사용불가능 하여 메모리를 증설하거나 다른 방법을 찾아야했다.  
+여러 자료를 찾던중 Swap 메모리를 통해 임시로 해결할수 있다는 내용을 찾았다.  
+Swap Memory는 RAM에 공간이 부족하여 저장되지 못하는 데이터를 저장하기 위해 사용하는 하드디스크 일부 공간이다.  
+RAM은 속도가 매우 빠르기 때문에 상대적으로 더 중요한 처리를 RAM에서 하고  
+덜 중요한 처리를 Swap Memory로 옮겨서 천천히 처리하게끔 하는 용도로도 쓰인다고 한다.  
+
+아래는 Swap Memory의 장단점이다.
+* 장점
+  * 메모리가 다 찼을 경우 보조 공간을 제공한다.
+  * 상대적으로 더 중요한 작업을 메모리에서 처리할 수 있도록 돕는다.
+  * 최대 절전 기능을 사용할 수 있게 한다.
+* 단점
+  * 스왑 메모리를 위한 파티션은 동적으로 설정할 수도 없고 결국 하드디스크 공간의 일부이기 때문에 설정한 만큼 하드 용량이 작아진다.
+  * 하드디스크의 소모율이 늘어날 수 있다.
+  * 항상 성능 향상에 도움이 되는것은 아니다.
+
+그렇다면 Swap Memory의 한도는 무제한일까?  
+역시 권장사항이 있다.  
+![image](https://user-images.githubusercontent.com/99777315/190859797-72bbd224-5f02-4ab4-b34a-a6e6848611f6.png)  
+
+그럼 이제 설정을 해보자  
+
+```
+# dd 명령어를 통해 swap 메모리 할당하고
+# 시간이 1분 ~ 5분정도 걸릴 수 있다.
+# 크기는 권장사항에 맞게 2GB(128MB x 16)
+sudo dd if=/dev/zero of=/swapfile bs=128M count=16
+16+0 records in
+16+0 records out
+2147483648 bytes (2.1 GB) copied, 15.8767 s, 135 MB/s
+
+# swap 파일의 읽기 및 쓰기 권한 업데이트
+sudo chmod 600 /swapfile
+
+# Linux swap 영역 설정
+sudo mkswap /swapfile
+Setting up swapspace version 1, size = 2 GiB (2147479552 bytes)
+no label, UUID=22c80ff2-8555-48cd-91ce-921d45237086
+
+# swap 공간에 swap file을 추가해 즉시 사용할 수 있도록 설정
+sudo swapon /swapfile
+
+# 정상적으로 설정되었는지 확인
+sudo swapon -s
+Filename				Type		Size	Used	Priority
+/swapfile                              	file    	2097148	0	-2
+
+# fstab에 /swapfile 설정 추가
+sudo vi /etc/fstab
+/swapfile swap swap defaults 0 0
+
+# 이 과정을 전부 진행하였다면 정상적으로 적용되었는지 확인
+free
+              total        used        free      shared  buff/cache   available
+Mem:         987700      419664      242604         500      325432      425528
+Swap:       2097148           0     2097148
+```
+
+fstab에 /swapfile 설정 추가 아래 이미지와 같이 설정 후  
+:ew 로 저장 후 종료 해주면 된다.
+![image](https://user-images.githubusercontent.com/99777315/190859982-e0b333b0-f685-4571-8473-9d6778ac727c.png)  
+
+
