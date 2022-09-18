@@ -18,7 +18,7 @@ codedeploy에서 배포 수명 주기 이벤트 실패뜨면서 에러가 배포
 ![image](https://user-images.githubusercontent.com/99777315/190905611-09954654-e70e-4114-a10e-b399ea2a5bcd.png)  
 ![image](https://user-images.githubusercontent.com/99777315/190905928-5f0c380f-f6db-4218-9172-b377fe809d62.png)  
 
-scripts/start.sh가 없다는 얘기인데 정확경로에 있는데 이게 무슨소리지 라는 생각으로 사례를 찾기 전
+scripts/start.sh가 없다는 얘기인데 정확경로에 있는데 이게 무슨소리지 라는 생각으로 사례를 찾기 전  
 우선 cat /var/log/aws/codedeploy-agent/codedeploy-agent.log로 로그를 확인해보았다.  
 
 ![image](https://user-images.githubusercontent.com/99777315/190907661-6825b37b-3824-4d29-b30a-93443780a5c3.png)  
@@ -29,7 +29,7 @@ scripts/start.sh가 없다는 얘기인데 정확경로에 있는데 이게 무�
 1. stackoverflow글을 참고하여 deployments을 지우고 codedeployagent를 재시작해보았다.
   * Stop the code deploy agent - sudo service codedeploy-agent stop
   * clear all deployments under /opt/codedeploy-agent/deployment-root
-  * Restart the code deploy agent - sudo service codedeploy-agent start
+  * Restart the code deploy agent - sudo service codedeploy-agent start  
   실패 여전하다.  
   [stackoverflow 링크](https://stackoverflow.com/questions/40013282/script-does-not-exist-at-specified-location)
 
