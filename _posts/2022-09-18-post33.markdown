@@ -1,0 +1,77 @@
+---
+title: "CodeDeploy 배포실패  "
+date: 2022-09-18
+last_modified_at: 2022-09-18
+categories: 
+  - Error
+tags:
+  - [CodeDeploy,Dockerfile,Jenkins]
+---
+
+nginx를 이용하여 rolling방식 무중단 배포를 구성하고있었는데  
+codedeploy에서 배포 수명 주기 이벤트 실패뜨면서 에러가 배포에 실패했다.  
+
+![image](https://user-images.githubusercontent.com/99777315/190905093-9db33196-e1e7-4b1c-a1a8-f45a100f283e.png)  
+
+배포 수명 주기 이벤트에서 view event에 가면 오류 코드를 확인할수있어서 이동해보았다.  
+
+![image](https://user-images.githubusercontent.com/99777315/190905611-09954654-e70e-4114-a10e-b399ea2a5bcd.png)  
+![image](https://user-images.githubusercontent.com/99777315/190905928-5f0c380f-f6db-4218-9172-b377fe809d62.png)  
+
+scripts/start.sh가 없다는 얘기인데 정확경로에 있는데 이게 무슨소리지 라는 생각으로 사례를 찾기 전
+우선 cat /var/log/aws/codedeploy-agent/codedeploy-agent.log로 로그를 확인해보았다.  
+
+![image](https://user-images.githubusercontent.com/99777315/190907661-6825b37b-3824-4d29-b30a-93443780a5c3.png)  
+
+동일한 말이다 scripts/start.sh를 찾을수 없단다.  
+
+여러 사례들을 찾고 시도해보았다.  
+1. stackoverflow글을 참고하여 deployments을 지우고 codedeployagent를 재시작해보았다.
+  * Stop the code deploy agent - sudo service codedeploy-agent stop
+  * clear all deployments under /opt/codedeploy-agent/deployment-root
+  * Restart the code deploy agent - sudo service codedeploy-agent start
+  실패 여전하다.  
+  [stackoverflow 링크](https://stackoverflow.com/questions/40013282/script-does-not-exist-at-specified-location)
+
+2. 클론했던 디렉토리 전체를 삭제하고 appspec.yaml파일의 hook에 BeforeInstall작성하여 다시 Deploy를 실행해봄  
+    ```
+    #appspec.yaml
+
+    hooks:
+      BeforeInstall:
+          - location: scripts/beforeInstall.bash
+
+    --------------------------------------------------------------------------------
+
+    #scripts/beforeInstall.bash
+
+    #!/bin/bash
+
+    # I want to make sure that the directory is clean and has nothing left over from
+    # previous deployments. The servers auto scale so the directory may or may not
+    # exist.
+    if [ -d /home/ubuntu/im-sprint-practice-deploy/ ]; then
+        rm -rf /home/ubuntu/im-sprint-practice-deploy/
+    fi
+    mkdir -vp /home/ubuntu/im-sprint-practice-deploy/
+    ```
+  또 실패다.  
+  [참고링크](https://velog.io/@jungjaedev/AWS-CodeDeploy-Fail-Message-The-deployment-failed-because-a-specified-file-already-exists-at-this-location)  
+
+3. 이와중 새벽에 배고파서 편의점가는길에 ci만 배포하였을땐 scripts 경로에 sh파일을 잘읽었는데  
+  왜 cicd로 배포구성 조금 바꼈다고 scripts경로를 읽지 못하는걸까? 라는 생각이 들어서
+  혹시나 하는 마음에 jenkins 구성을 확인해보았다.  
+  ![image](https://user-images.githubusercontent.com/99777315/190912470-480a3aae-8885-427c-b02a-88bfc726546c.png)  
+
+  하하하...  
+
+  ```
+  **/*.jar, **/appspec.yml, **/scripts/* Dockerfile 
+  **/*.jar, **/appspec.yml, **/scripts/*, Dockerfile 
+  ```
+  ","하나로 scripts와 Dockerfile 두개 모두 읽혀지지 않았던것이다.  
+
+항상 오타 확인한다고 하는데 또 이런 실수를 해버렸다.  
+빠른것도 좋지만 신중하게 코딩하고 검수해야겠다.
+
+
