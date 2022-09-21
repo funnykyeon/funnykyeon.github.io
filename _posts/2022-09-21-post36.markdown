@@ -1,9 +1,9 @@
 ---
 title: "무중단 배포 환경 구축 완료"
-date: 2022-09-20
-last_modified_at: 2022-09-20
+date: 2022-09-21
+last_modified_at: 2022-09-21
 categories: 
-  - Diary
+  - 
 tags:
   - [Let's Encrypt,SSL,Jenkins,Nginx,Docker]
 ---
