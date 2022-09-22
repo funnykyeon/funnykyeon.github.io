@@ -1,0 +1,90 @@
+---
+title: "WebSecurityConfigurerAdapter 지원 중단"
+date: 2022-09-22
+last_modified_at: 2022-09-22
+categories: 
+  - Spring
+tags:
+  - [Spring, Security]
+---
+># SpringSecurity 5.7 이후 지원 중단
+
+### 개발환경
+- SpringBoot 2.7.3
+- SpringSecurity 5.7.3
+- Java11
+
+![image](https://user-images.githubusercontent.com/99777315/191741830-beb3fe71-29a8-4338-a9b0-09924921f3cd.png)  
+
+Intellij IDE 에서 이미지와 같이 WebSecurityConfigurerAdapter extends 상속 부분에 취소선이 생겼다.  
+이유는 SpringSecurity 5.7부터 WebSecurityConfigurerAdapter를 지원중단 했다고 한다.  
+이전 프로젝트할때 SecurityConfig 코드를 저렇게 만들었었는데 취소선이 보기싫어 다른방식을 찾아보려고한다.  
+
+상냥하게도 공식 홈페이지에 기존 코드에서 변경 코드 까지 상세하게 나와있다. [스프링 공식 홈페이지 링크](https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter)  
+
+
+## HttpSecurity 구성방법
+```java
+//변경 전
+@Configuration
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests((authz) -> authz
+                .anyRequest().authenticated()
+            )
+            .httpBasic(withDefaults());
+    }
+}
+```
+권장되는 방법은 아래와 같이 SecurityFilterChain을 @Bean 등록하는 방법으로 변경
+```java
+//변경 후
+@Configuration
+public class SecurityConfiguration {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests((authz) -> authz
+                .anyRequest().authenticated()
+            )
+            .httpBasic(withDefaults());
+        return http.build();
+    }
+}
+```
+
+## WebSecurity 구성방법
+```java
+//변경 전
+@Configuration
+public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers("/ignore1", "/ignore2");
+    }
+}
+```
+권장되는 방법은 WebSecurityCustomizer를 @Bean으로 등록하는 것이다.
+```java
+//변경 후
+@Configuration
+public class SecurityConfiguration {
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().antMatchers("/ignore1", "/ignore2");
+    }
+}
+```
+
+#### 주의사항  
+WebSecurity 요청을 무시하도록 구성하는 대신에 바로 위에서 HttpSecurity를 구성할 때  
+authorizeHttpRequests에서 그 경로를 permitAll 하는것이 좋다.  
+[공식문서](https://docs.spring.io/spring-security/site/docs/5.7.0-M2/api/org/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.html#configure(org.springframework.security.config.annotation.web.builders.WebSecurity))에서는 스프링 시큐리티에서 해당 경로를 무시하는 것이기 때문에  
+CSRF, XSS, Clickjacking 등에서 보호하지 않는다.  
+따라서 이 취약점으로부터 보호하려면 HttpSecurity에서 permitAll을 하자.
