@@ -1,0 +1,59 @@
+---
+title: "Java8 Optional"
+date: 2022-09-23
+last_modified_at: 2022-09-23
+categories: 
+  - Java
+tags:
+  - [Optional]
+---
+># Optional  
+
+### 왜 만들어졌는가?
+
+- 자바8 이전에는 메서드가 값을 반환할 수 없는 상황인경우 두 가지 선택지가 존재했다.
+    1. 예외 던지기
+    2. null 반환하기
+- 예외를 던지는 경우에는 스택 추적 전체를 캡처하는 비용문제가 있다.
+- null을 반환하는 경우에는 메서드를 호출하는 곳에서 null처리 코드를 추가해야 하고
+    만약 무시하면 언제 어디서 NPE(null point Exception)를 만날지 모른다.  
+
+### 왜 사용하는가?
+
+- Optional은 null이 아닌 T 타입 참조를 하나 담거나, 아무것도 담지 않을 수 있다.
+    그래서 Optional은 원소를 최대 1개 가질 수 있는 **불변 컬렉션**이다.
+- 자바 8부터는 위에서 얘기한 메서드가 값을 반환할 수 없는 상황인경우 Optional을 반환하면 된다. 왜?
+    - Optional을 반환하는 메서드는 예외를 던지는 메서드보다 유연하고 사용하기 쉽다. 
+    - null을 반환하는 메서드보다 오류 가능성이 적다.
+
+# Optional의 메서드 
+
+### of(), ofNullable(), empty()
+
+- Optioanl을 생성해주는 정적 팩터리 메서드
+```java
+Optional.empty(); // 비어있는 Optioanl 반환
+Optional.of(T); // 파라미터로 전달된 값을 Optional로 감싸서 반환, null 불가
+Optional.ofNullbale(T); // 파라미터로 전달된 값을 Optional로 감싸서 반환, null 허용
+```
+- of() 메서드에서 null값을 전달하면 NPE를 던진다.
+- null값도 허용하는 Optional을 만드려면 ofNullable()를 사용하자.
+- 추가로 Optional을 반환하는 메서드에서는 절대 null을 반환하지말자
+    Optional을 도입한 취지를 완전히 무시하는 행위이다.
+
+### isPresent(), ifPresent()
+```java
+Optional.ifPresent(...); // Optional이 비어 있지 않으면 해당 값으로 로직 수행
+Optional.isPresent(...); // Optional이 비어 있지 않으면 true 반환
+```
+- isPresent()는 예외처리할때 유용하다
+    예로 회원가입 하는경우 클라이언트가 전달한 정보로 DB에서 조회했을 때 이미 회원이 존재한다면? isPresent()를 이용해 예외를 던질 수 있다.
+- ifPresent()는 null값을 전달할 경우 NPE를 던질 수 있다고 명시되어 있으니 주의하자.
+
+### OptionalInt, OptionalLong, OptioanlDouble
+- 박싱된 기본타입(Integer, Long, Double 등)을 담는 Optional은 값을 두번이나 감싸기 때문에 무겁다.
+- 그래서 이를 위한 Optional 클래스를 제공한다.
+    - OptionalInt, OptionalLong, OptionalDouble
+- 박싱된 기본타입을 담는 Optioanl을 사용하는일은 없도록 하자.
+
+
