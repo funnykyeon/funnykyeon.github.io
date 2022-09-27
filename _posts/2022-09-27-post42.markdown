@@ -1,0 +1,43 @@
+---
+title: "@PathVariable"
+date: 2022-09-27
+last_modified_at: 2022-09-27
+categories: 
+  - Spring
+tags:
+  - [Annotation]
+---
+
+># @PathVariable 이란?
+
+실무에 REST API에서 URI에 변수가 들어가는걸 많이 볼 수 있다.  
+예를 들면, 아래 URI에서 밑줄 친 부분이 @PathVariable로 처리해줄 수 있는 부분이다.  
+**https://gururu.shop/api/user/<U>1234</U>**  
+**https://gururu.shop/album/<U>4062464</U>**  
+
+
+## 사용법을 알아보자
+
+Controller에서 아래와 같이 작성하면 간단하게 사용 가능  
+
+RESTAPI에 {변수명}  
+메소드 정의에서 위에 쓴 변수명을 그대로 @PathVariable("변수명")  
+(Optional) Parameter명은 제한 없음(아래에서 String name도 OK, String employName도 OK)  
+
+```java
+@RestController
+public class StoreController { 
+    // 기본
+    @GetMapping("/store/{name}")
+    public String findByName(@PathVariable("name") String name ) {
+        return null
+    }
+    
+    // 여러 개
+    @GetMapping("/store/{id}/{name}")
+	public String findByNameAndId(@PathVariable("id") String id, @PathVariable("name") String name) {
+    	return null;
+    }
+    
+}
+```
