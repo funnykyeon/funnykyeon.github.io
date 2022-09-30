@@ -1,0 +1,48 @@
+---
+title: "구글 서치 콘솔 색인 제외됨"
+date: 2022-09-30
+last_modified_at: 2022-09-30
+categories: 
+  - Diary
+tags:
+  - [GoogleSearchConsole]
+---
+사전에 깃허브블로그를 구글 서치 콘솔을 등록할때 색인이 등록되기까지 몇일 걸린다고 들어서 등록 후 신경쓰고 있지않았다.  
+한달후에나 확인한 결과 색인이 생성된걸 확인할수있었다.  
+근데 문제는 새로 업로드하는 포스팅들은 발견은 되지만 색인생성되지않고 제외되는 항목을 발견을 했다.  
+  ![image](https://user-images.githubusercontent.com/99777315/193236610-f967726e-52c7-4db2-9dec-de86b9407984.png)  
+  ![image](https://user-images.githubusercontent.com/99777315/193237036-290257b5-743b-47e1-ac5d-b9ff5882d3a3.png)  
+
+위 이미지와 같은 상황을 알아보기위해 SearchConsole 고객센터로 이동하여 해당내용을 찾아보았다.  
+![image](https://user-images.githubusercontent.com/99777315/193248922-7f8c5b31-8a10-4bef-9873-a00a9f35bfcd.png)  
+[SearchConsole 고객센터 링크](https://support.google.com/webmasters/answer/7440203#crawled)  
+사이트 과부하라..  
+
+비슷한 내용을 찾기 위해 구글링을 해본결과 같은 사례가 있었다.  
+방법은 두가지라고 한다.  
+- 1. 구글에서 색인을 해줄때까지 기다린다.  
+- 2. 페이지별로 색인 요청은 한다.  
+
+기다릴수가 없어 나는 바로 2번을 실행하였다.
+
+GoogleSearchConsole에서 왼쪽 색인 -> 페이지로 이동한다.  
+
+![image](https://user-images.githubusercontent.com/99777315/193249916-66be3654-0cf2-427e-931a-fc97bd1a2ca3.png)  
+위 이미지와 같은 발견됨 - 현재 색인이 생성되지 않음을 클릭한다.  
+
+![image](https://user-images.githubusercontent.com/99777315/193250284-dccda6b8-05da-40fe-981a-478a77613222.png)  
+해당사항 없는 URI를 클릭하면 아래와 같은 이미지가 나올것이다.  
+![image](https://user-images.githubusercontent.com/99777315/193250487-693e854d-b5b7-490f-869a-5863ad3e7b90.png)  
+오른쪽에 URI 검사를 눌러주면 검사후 URI 검사된 페이지로 이동할것이다.  
+
+상단에 보면 색인 생성 요청이 보일것이다.  
+![image](https://user-images.githubusercontent.com/99777315/193250711-91a1b3bc-275b-4964-8b9e-6d67a30e0241.png)  
+클릭후 색인 요청을 하면 실제 URI를 생성할수 있는지 테스트 한다며 1~2분 소요될수있다고 나온다.  
+![image](https://user-images.githubusercontent.com/99777315/193250859-15e8feb9-fc3e-406c-84b1-7089a9a2e822.png)  
+약 12개 정도 진행해본 결과 보통 1분이내로 테스트는 종료되었다.  
+
+추가로 요청이 많을시 이런 알림이 뜬다.  
+다시한번 요청하면 넘어가지니 시도해보도록하자.  
+![image](https://user-images.githubusercontent.com/99777315/193251906-209f554d-b8ef-4b3f-8b56-6173112635d8.png)  
+
+매일 확인하며 페이지별로 색인 요청부터 생성까지 얼마나 소요되는지 확인 후 블로그내용을 추가하겠다.
