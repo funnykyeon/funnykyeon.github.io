@@ -1,0 +1,173 @@
+---
+title: "CloudWatch Alarm을 Slack 연동"
+date: 2022-10-02
+last_modified_at: 2022-10-02
+toc: true
+toc_sticky: true
+categories: 
+  - AWS
+tags:
+  - [CloudWatch, Slack]
+---
+
+스파르타 코딩클럽 PM 업무를 보면서 수강생들 사이에서 AWS 해킹이슈가 2~3건 정도 나왔다.  
+아무리 보안을 좋아도 해킹은 어쩔수 없는것 같아 피해를 최소한으로 만들 방법이 없을지 찾아보던중  
+CloudWatch라는 것을 알게되었다.  
+
+# CloudWatch란?
+
+Alarm(경보)를 사용하여 모니터링 할 수 있으며 Alarm(경보)를 설정하고 해당 내용에 대해서 알람을 받을 수 있다.
+
+그치만 항상 AWS Console을 보면서 모니터링을 할 수 없으므로, 설정한 Alarm(경보)이 발생하였을 때  
+AWS의 SNS, Lambda를 이용하여 Slack과 연동하여 Slack으로 Alarm(경보)를 받는 방법을 소개한다.   
+
+구성 진행 순서로는  
+1. Slack - Webhooks URL 생성
+2. AWS SNS 토픽 만들기
+3. AWS Lambda Function 만들기
+4. Lambda Function Test
+5. CloudWatch Alaram 설정
+6. 테스트
+
+## 1. Slack - Webhooks URL 생성  
+
+아래 이미지의 경로로 이동하여 앱관리로 진입한다.  
+![image](https://user-images.githubusercontent.com/99777315/193445201-d5de7949-fd56-40e6-8748-793a0078d694.png)  
+
+상단 검색창에 webhook을 검색하여 수신 웹후크를 클릭해준다.  
+![image](https://user-images.githubusercontent.com/99777315/193445246-cb3b86b9-e5ab-4e9e-bcd2-38c824b88f6b.png)  
+
+slcak에 추가버튼을 클릭하여 채널선택후 앱을 추가 해준다.  
+![image](https://user-images.githubusercontent.com/99777315/193445291-d1ec2aeb-b80a-4247-a810-7b9cd15308d5.png)  
+![image](https://user-images.githubusercontent.com/99777315/193445317-05054e03-ace8-4c00-9789-ba342eec0053.png)  
+
+해당 화면에서 채널을 선택해주고 웹후크 URL을 메모후에 설정 저장을 해준다.  
+![image](https://user-images.githubusercontent.com/99777315/193445374-5232ff1b-425a-4d6e-bd0a-c23a9c277933.png)  
+
+## 2. AWS SNS 토픽 만들기  
+
+CloudWatch가 알림을 넘길 SNS topic을 만들어 주자   
+Amazon SNS>주제>주제 생성을 하면된다.  
+![image](https://user-images.githubusercontent.com/99777315/193445696-2bf5413e-ca04-4232-a0b5-9fc62b7c0043.png)  
+
+## 3. AWS Lambda Function 만들기  
+
+생성한 SNS 토픽을 Subscription 할 Lambda 함수를 만들자  
+Lambda > 함수 > 함수 으로 이동  
+![image](https://user-images.githubusercontent.com/99777315/193445750-769ba72d-1423-4a93-a4bf-5ecb0d18a28a.png)  
+
+함수 이름을 설정해주고 아까만든 SNS를 선택해주자.  
+환경 변수에는 일단 임의의 값을 넣고 넘어가자  
+![image](https://user-images.githubusercontent.com/99777315/193445919-a9e462db-37a7-4dda-9424-bf7d7de6c1b5.png)  
+
+위와 같이 진행했다면 아래와 같은 페이지가 나올것이다.  
+![image](https://user-images.githubusercontent.com/99777315/193446139-5fbcf7cf-a978-4108-85cf-34526706445a.png)  
+
+위에서 생성했던 블루 프린터 Lambda 함수의 코드를 조금 수정하고 테스트를 빠르게 해보기위해 위해 KMS 연동 부분은 제거했다.  
+코드에 하단에 코드를 넣어주자  
+
+환경 변수명이 조금변경되니 이미지를 참고하기 바란다.  
+구성 -> 환경 변수 -> 편집  
+
+```python
+import boto3
+import json
+import logging
+import os
+
+from base64 import b64decode
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
+
+HOOK_URL = os.environ['HOOK_URL']
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+
+def lambda_handler(event, context):
+    logger.info("Event: " + str(event))
+    message = json.loads(event['Records'][0]['Sns']['Message'])
+    logger.info("Message: " + str(message))
+
+    alarm_name = message['AlarmName']
+    #old_state = message['OldStateValue']
+    new_state = message['NewStateValue']
+    reason = message['NewStateReason']
+
+    slack_message = {
+        'text': "%s state is now %s: %s" % (alarm_name, new_state, reason)
+    }
+
+    req = Request(HOOK_URL, json.dumps(slack_message).encode('utf-8'))
+    try:
+        response = urlopen(req)
+        response.read()
+        logger.info("Message posted")
+    except HTTPError as e:
+        logger.error("Request failed: %d %s", e.code, e.reason)
+    except URLError as e:
+        logger.error("Server connection failed: %s", e.reason)
+```
+
+![image](https://user-images.githubusercontent.com/99777315/193446339-96a6f7ab-3cf2-45b2-b8fc-fc6d9bb72f8b.png)  
+
+## 4. Lambda Function Test 
+Lambda는 테스트 이벤트를 생성해서 잘 독장하는지 확인할 수 있는 인터페이를 제공한다.  
+테스트탭으로 이동하여 이벤트 이름을 써주고 아래 테스트코드를 넣어주자.  
+테스트 코드는 CloudWatch에서 보내는 Alarm과 동일한 형태의 테스트 이벤트 메시지이다.  
+```
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:eu-west-1:000000000000:cloudwatch-alarms:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "TopicArn": "arn:aws:sns:eu-west-1:000000000000:cloudwatch-alarms",
+        "Subject": "ALARM: \"Example alarm name\" in EU - Ireland",
+        "Message": "{\"AlarmName\":\"Example alarm name\",\"AlarmDescription\":\"Example alarm description.\",\"AWSAccountId\":\"000000000000\",\"NewStateValue\":\"ALARM\",\"NewStateReason\":\"Threshold Crossed: 1 datapoint (10.0) was greater than or equal to the threshold (1.0).\",\"StateChangeTime\":\"2017-01-12T16:30:42.236+0000\",\"Region\":\"EU - Ireland\",\"OldStateValue\":\"OK\",\"Trigger\":{\"MetricName\":\"DeliveryErrors\",\"Namespace\":\"ExampleNamespace\",\"Statistic\":\"SUM\",\"Unit\":null,\"Dimensions\":[],\"Period\":300,\"EvaluationPeriods\":1,\"ComparisonOperator\":\"GreaterThanOrEqualToThreshold\",\"Threshold\":1.0}}",
+        "Timestamp": "2017-01-12T16:30:42.318Z",
+        "SignatureVersion": "1",
+        "Signature": "Cg==",
+        "SigningCertUrl": "https://sns.eu-west-1.amazonaws.com/SimpleNotificationService-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.pem",
+        "UnsubscribeUrl": "https://sns.eu-west-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:eu-west-1:000000000000:cloudwatch-alarms:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}
+```
+
+위와 같이 설정 후 테스트 버튼을 눌러주면 아래 이미지와 같은 메시지가 Slack으로 올것이다.  
+![image](https://user-images.githubusercontent.com/99777315/193446480-921170ea-58cc-411c-a53b-eeda5be90fbf.png)  
+
+## 5. CloudWatch Alaram 설정
+
+CloudWatch로부터 알람을 받기 위해서 CloudWatch 알람을 만들어 보자
+CloudWatch > 경보 > 경보 생성  
+테스트를 위해 만든 인스턴스의 CPUUtilization 지표로 설정하고 아래와 같이 작성해서 생성해주자  
+![image](https://user-images.githubusercontent.com/99777315/193446656-61747bd0-ff48-4342-b12f-fbafe0a3d04f.png)  
+![image](https://user-images.githubusercontent.com/99777315/193446999-dbe37e60-8307-4d87-a1ab-e930f3ec55be.png)  
+![image](https://user-images.githubusercontent.com/99777315/193447037-52c55389-e2f4-4968-a655-69c780d0698a.png)  
+
+
+## 6. 테스트
+테스트 EC2 인스턴스의 stress를 설치하여 CPU 사용 %를 높여 CloudWatch 경보를 발생시켜  
+Slack으로 메시지가 오는지 확인하기 위한 테스트를 진행해보자  
+
+```
+sudo amazon-linux-extras install epel -y
+sudo yum install -y stress
+```
+위의 명령어로 테스트 EC2 인스턴스의 stress를 설치하자  
+
+```
+stress --cpu 1 --timeout 600    // cpu 100% 사용을 10분 동안 지속시키자  
+```
+
+위에 테스트에서 진행햇던것 처럼 Slack으로 메시지가 올것이다.  
+
+이 설정만 해놓는다면 피해를 막을순 없겟지만 최소한의 피해로 끝낼수있다.  
