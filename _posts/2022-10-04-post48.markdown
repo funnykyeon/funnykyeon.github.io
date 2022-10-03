@@ -1,0 +1,28 @@
+---
+title: "Git 강제 Pull"
+date: 2022-10-03
+last_modified_at: 2022-10-03
+categories: 
+  - CS
+tags:
+  - [Gtihub]
+---
+
+git pull 말도 안되는 이유로 충돌나는 경우가있다.
+오늘도 그런경우였고 앞으로 많이 있을것같다.  
+ 
+1. git pull 받을 목록을 repo에서 업데이트하자  
+```
+git fetch --all
+```
+2. git reset 으로 head를 최신으로  
+```
+git reset --hard origin/main (혹은 master)
+```
+3. git pull 로 확인
+```
+git pull
+```
+강제로 최신버전 head를 바라보면서 덮어쓰기가 된다.
+
+간단한건데 왜이렇게 충돌이 많이나는지 깊게 공부해봐야겠다.
