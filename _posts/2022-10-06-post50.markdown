@@ -1,0 +1,40 @@
+---
+title: "Intellij 단어 일괄수정"
+date: 2022-10-05
+last_modified_at: 2022-10-05
+categories: 
+  - CS
+tags:
+  - [Intellij]
+---
+
+프로젝트 진행중 비슷한 CRUD를 만드는 상황들이 생긴다.  
+하나하나 체크하면서 바꾸자니 빼먹는것들이 있어서 피해서 일괄로 바꿀수있는 방법이 없나 찾아보았다.  
+역시 갓 인텔리제이 없는게 없다.  
+![image](https://user-images.githubusercontent.com/99777315/194052200-a1c7dfe0-9517-43f5-800e-3e7d8479f89d.png)  
+ctrl + r 단축키를 눌러보면 ctrl + f 와 비슷한 창이 뜬다.  
+
+```java
+public class Member {
+  private String memberName;
+}
+```
+
+위 이미지와 동일하게 변경대상에 Member를 넣고 변경단어에 Test를 넣고 모두 바꾸기버튼을 누른다면  
+아래와같은 코드로 변경됬을것이다.  
+```java
+public class Test {
+  private String memberName;
+}
+```
+왜 memberName에도 member가 들어가있는데 변경되지 않았는지 궁금할수있다.  
+상단 이미지를 보면 Aa 버튼 (대소문자 구분) 을 클릭해주어 대소문자를 구분한 정확한 단어만 선택하게 해놓았다.  
+
+자 그렇다면 더 넓게 해보자.  
+ctrl + f는 해당 파일 내에서 의 검색이고 ctrl + shift + f는 프로젝트 내에서 검색이다.  
+그렇다면 프로젝트 내에서 일괄수정하기위한 단축키는 무엇일까?  
+
+ctrl + shift + r 이다. 아래 이미지와 같은 화면이 나올것이고 원하는 단어를 입력하여 변경하면 될것이다.  
+![image](https://user-images.githubusercontent.com/99777315/194050476-d5d0daa0-4458-4d3d-a17a-3a2b3fb11b3f.png)  
+
+이 방법으로 큰변동이 없는 CRUD들은 간단하게 만들었다.
