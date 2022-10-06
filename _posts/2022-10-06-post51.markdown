@@ -1,0 +1,36 @@
+---
+title: "Intellij HikariPool-1 - Starting... 무한지연"
+date: 2022-10-06
+last_modified_at: 2022-10-06
+categories: 
+  - Diary
+tags:
+  - [Intellij,RDS]
+---
+
+점심에 잠시 이동할일이 있어서 이동중에 프로젝트 테스트를 해보고 있었다.  
+Intellij에서 프로젝트 시작후 자연스럽게 Postman으로 테스트 하던중  
+Could not send request 라는 에러 메시지가 나오면서 요청을 보낼수없었다.  
+<img width="1041" alt="image" src="https://user-images.githubusercontent.com/99777315/194214149-3220aa35-e01b-47c0-9c12-808db92f5a9c.png">  
+
+곰곰히 생각해봤다 어제 잠들기 전까진 잘되었는데 ??  
+IntelliJ를 확인해보니 아래 이미지와 같은 상황에서 멈춰있었다.  
+<img width="1297" alt="image" src="https://user-images.githubusercontent.com/99777315/194214685-42ae9d18-87d2-4992-adb0-25085acec8ee.png">  
+
+일단 안된다고 멍하게 있을 수 없으니 바로 확인에 들어갔다.  
+해결해보려고 해본방법들이다.  
+1. Amazon RDS 문제인지 확인해보았다.
+  - 정상이고 문제가 전혀없었다.
+2. H2로 연결해보았다.
+  - 정상연결이 된다.
+3. RDS도 정상이고 H2도 정상이였다. 여기서 소름끼치는 생각이 들었는데 
+  난 외부고 핸드폰 핫스팟으로 인터넷을 사용하고 있었다.  
+  일전에 설정해준 보안그룹에 인바운드규칙이 생각이났다.  
+  - 해결방법으론 현재 내 핫스팟 IP를 확인하고 그 IP를 인바운드 그룹에 넣어주었다.
+    정상연결된다. 
+
+    
+아마 대충 블로그보고 설정했으면 해당 문제에서 긴시간을 소모했을것같다.  
+인바운드규칙 설정당시 환경변수,Docker-Compose,인바운드규칙 다양하게 찾아보고  
+블로그에 해당 내용을 정리했기에 오늘같은 상황에서도 바로 기억해 낼수있었던것같다.  
+
