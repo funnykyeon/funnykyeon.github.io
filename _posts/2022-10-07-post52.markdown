@@ -1,0 +1,118 @@
+---
+title: "Auditor JPA로 작성자,수정자 자동 세팅하기"
+date: 2022-10-07
+last_modified_at: 2022-10-07
+categories: 
+  - Spring
+tags:
+  - [JPA]
+---
+
+프로젝트 진행하면서 각 Entity에 작성자와 수정자 아이디, 작성시간과 수정시간을 중복으로 넣는건 비효율적인데  
+다른 방법이 없을까 하여 찾아보다 Auditor를 알게되었다.   
+작성자와 수정자, 작성시간과 수정시간을 자동으로 세팅해주어 비지니스 로직을 효율적으로 작성할수있었다.  
+
+## CustomAuditorAware  
+테이블에 넣어줄 loginId를 Optional 클래스에 세팅하여 리턴
+```java
+@Component
+@RequiredArgsConstructor
+@Slf4j
+public class CustomAuditorAware implements AuditorAware<UUID> {
+
+    private final MemberRepository memberRepository;
+
+    @Override
+    public Optional<UUID> getCurrentAuditor() {
+        Optional<String> optionalLoginid = SecurityUtil.getCurrentNickname();
+
+        if (optionalLoginid.isPresent()) {
+            Optional<Member> optionalMember = memberRepository.findRequires_NewByLoginId(optionalLoginid.get());
+            Member member = optionalMember.orElseThrow(
+                    () -> new RequestException(ErrorCode.MEMBER_LOGINID_NOT_FOUND_404));
+
+            return Optional.of(member.getId());
+        } else {
+            return Optional.empty();
+        }
+    }
+}
+```
+## SecurityUtil
+```java
+@Slf4j
+public class SecurityUtil {
+
+    public static Optional<String> getCurrentNickname() {
+
+
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null) {
+            log.debug("Security Context에 인증 정보가 없습니다.");
+            System.out.println("authentication = " + authentication);
+            return Optional.empty();
+        }
+
+        String nickname = null;
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails authenticationMember = (UserDetails) authentication.getPrincipal();
+            nickname = authenticationMember.getUsername();
+        }
+        log.debug("getCurrentNickname, nickname: '{}'", nickname);
+
+        return Optional.ofNullable(nickname);
+    }
+} 
+```
+
+## BaseEntity
+```java
+@Getter
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+@ToString
+public abstract class BaseEntity extends BaseTimeEntity {
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Type(type = "org.hibernate.type.UUIDCharType")
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedBy
+    @Column(updatable = false)
+    private UUID createdBy;
+
+    @LastModifiedBy
+    private UUID modifiedBy;
+}
+```
+## BaseTimeEntity
+```java
+@Getter
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+@ToString
+public abstract class BaseTimeEntity {
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdTime;
+
+    @LastModifiedDate
+    private LocalDateTime modifiedTime;
+}
+```
+
+나는 BaseEntity와 BaseTimeEntity 따로 interface로 각 Entity에 extends시켜놨다.  
+
+BaseEntity에는 @EntityListeners를 설정 후에 등록자에 @CreatedBy 어노테이션을 붙여주고,  
+수정자에는 @LastModifiedBy 어노테이션을 붙여줬다.  
+
+추가로 BaseTimeEntity에는 생성시간에 @CreatedDate와 수정시간에 @LastModifiedDate를 설정해주고 세팅을 끝낼수있었다.
