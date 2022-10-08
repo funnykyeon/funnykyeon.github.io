@@ -1,6 +1,6 @@
 ---
-title: "Intellij HikariPool-1 - Starting... 무한"
-date: 2022-10-06
+title: "Intellij 단어 일괄수정"
+date: 2022-10-05
 last_modified_at: 2022-10-05
 categories: 
   - CS
