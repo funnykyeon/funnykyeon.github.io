@@ -1,80 +1,132 @@
 ---
-title: "로깅이란"
-date: 2022-10-10
-last_modified_at: 2022-10-10
+title: "SLF4J 사용법"
+date: 2022-10-11
+last_modified_at: 2022-10-11
 categories: 
   - Spring
 tags:
-  - [Logging]
+  - [SLF4J]
 ---
 
-운영 중인 웹 어플리케이션에 문제가 발생했을 경우, 문제의 원인을 파악하려면 문제가 발생했을 때의 정보가 필요하다.  
+로그에 관한 이전글  
+[▷로깅이란?](https://funnykyeon.github.io/spring/post55/)  
 
-이를 위해 Exception이 발생했거나 중요 기능이 실행되는 부분에서 적절한 로그를 남겨야 한다.  
+로그를 위한 라이브러리는 다양한 종류가 있다.  
+이 다양한 라이브러리를 같은 방법으로 사용할 수 있도록 도와주는 SLF4J에 대해 알아보도록 하자.  
 
-이를 생성하는 로깅에 대해 알아보도록 하겠다.  
+## SLF4J란? 
+
+SLF4J는 로깅 [Facade(퍼사드)](https://ko.wikipedia.org/wiki/%ED%8D%BC%EC%82%AC%EB%93%9C_%ED%8C%A8%ED%84%B4)이다. 로깅에 대한 추상 레이어를 제공하는 interface의 모음이다.  
+여러 로깅 라이브러리를 하나의 통일된 방식으로 사용할 수 있는 방법을 제공한다.  
+아래 그림을 보면, 초록색 박스의 application들은 하늘색의 SLF4J API를 사용하고 있다.  
+<img width="966" alt="image" src="https://user-images.githubusercontent.com/99777315/194954259-3e8f9e11-7643-4628-a591-e38efed3cfd4.png">  
+이렇게 application은 SLF4J를 이용하여, 로깅 라이브러리가 어떤 것이든 같은 방법으로 로그를 남길 수 있게 되는 것이다.  
+나중에 더 좋은 라이브러리가 생겨 교체하더라도, application의 코드를 변경할 필요가 없다는 장점이 있다.  
+
+## SLF4J와 Logback을 이용해 로그 사용하기
+
+스프링 부트 라이브러리가 기본으로 제공하는 SLF4J와 Logback을 이용해 로그를 사용하는 방법을 알아보자  
+
+운영 시스템에서는 System.out.println()같은 시스템 콘솔을 사용해서 필요한 정보를 출력하지 않는다.  
+별도의 로깅 라이브러리를 사용해서 로그를 출력한다. 최소한의 로그 사용법을 알아보자.  
+
+## ① 로깅 라이브러리 선택
+스프링 부트 라이브러리를 사용하면 스프링 부트 로깅 라이브러리spring-boot-starter-logging가 함께 포함된다.  
+스프링 부트 로깅 라이브러리는 SLF4J와 Logback 로깅 라이브러리를 사용한다.  
+
+- SLF4J - http://www.slf4j.org
+- Logback - http://logback.qos.ch
+
+로그 라이브러리는 Logback, Log4J, Log4J2 등등 수 많은 라이브러리가 존재한다.  
+다양한 로그 라이브러리를 통합해서 인터페이스로 제공하는 것이 SLF4J 라이브러리다.  
+
+SLF4J는 인터페이스이고, 그 구현체로 Logback 같은 로그 라이브러리를 선택하면 된다.  
+실무에서는 대부분 스프링 부트가 기본으로 제공하는 Logback을 사용한다고 한다.  
+
+## ② 로그 선언 방법
+
+```java
+private Logger log = LoggerFactory.getLogger(getClass()); 
+private static final Logger log = LoggerFactory.getLogger(Xxx.class) 
+```
+> @Slf4j : 롬복을 이용하여 SLF4J 사용 가능
 
 
-## 로깅이란?
- 
-로깅(logging)은 정보를 제공하는 일련의 기록인 로그(log)를 생성하도록 시스템을 작성하는 활동을 말한다.  
+## ③ 로그 호출 방법
 
-이런 로그들은 테스트할 때 재현하기 힘든 버그가 개발 완료된 환경에서 발생했을 경우, 그런 버그들에 대한 정보를 알려줄 수 있으며,  
+- log.info("hello")
+- System.out.println("hello")
 
-구문들 사이에 걸리는 시간 등의 성능에 관한 통계와 정보를 제공할 수 있다.  
+### ex) LogTestController
+```java
+@Slf4j
+@RestController
+public class LogTestController {
 
-로그가 제공하는 정보의 양은 프로그램이 실행되는 중에도 설정이 가능한 것이 이상적이다.  
+    // @Slf4j가 있으면 해당 역할을 대신 한다.
+    // private final Logger log = LoggerFactory.getLogger(getClass());
 
-설정이 가능할 때, 로그는 예기치 못한 특정 문제들을 디버그하기 위해 코드를 수정하고 다시 적용(redeploy)하지 않아도,  
+    @RequestMapping("/log-test")
+    public String logTest() {
+        String name = "Spring";
 
-일반적인 정보를 갈무리할 수 있게 해 준다. 초보자들은 프로그래밍에 대해 아는 것에 한계가 있기 때문에 로그를 사용해야 하고,  
+        log.trace("trace log = {}", name);
+        log.debug("debug log = {}", name);
+        log.info("info log = {}", name);
+        log.warn("warn log = {}", name);
+        log.error("error log = {}", name);
 
-시스템 설계자들은 시스템의 복잡성 때문에 로그를 이해하고 사용해야 한다.  
+        return "ok";
+    }
+}
+```
 
+### LogTestController 매핑 정보
 
-## 로그 라이브러리
+### @RestController
 
-가장 간단하게 로그를 출력할 수 있는 방법은 System.out.println()을 이용하는 것이다.  
+- @Controller는 반환 값이 String이면 뷰 이름으로 인식된다. 그래서 뷰를 찾고 뷰가 랜더링 된다.
+- @RestController는 반환 값으로 뷰를 찾는 것이 아니라, HTTP 메시지 바디에 바로 입력한다.  
+  따라서 실행 결과로 ok 메세지를 받을 수 있다.
 
-실행 중 다양한 입출력 및 변수 값들을 출력할 수 있다.  
+### 로그 옵션
+1. 로그가 출력되는 포맷
+  - 시간, 로그 레벨, 프로세스 ID, 쓰레드 명, 클래스명, 로그 메시지
+2. 로그 레벨 설정을 변경해서 출력 결과를 다르게 할 수 있다.
+  - LEVEL: TRACE > DEBUG > INFO > WARN > ERROR
+  - 개발 서버는 debug 출력
+  - 운영 서버는 info 출력
 
-하지만 System.out.println() 명령은 출력되는 로그의 양이나 수준을 조절할 수 없고, 출력된 로그를 파일 등에 저장하기도 불편하다.  
+## ④ 로그 레벨을 설정하는 방법
+application.properties 에서 아래와 같이 입력해준다.  
 
-성능 면에서도 굉장히 낮은 편에 속한다. System.out.println()을 자주 이용하면 웹 어플리케이션의 속도는 상당히 느려진다. 운영 중인 서버에는 이걸로 로그를 남기면 안 된다.  
+```java
+#전체 로그 레벨 설정(기본 info)
+logging.level.root=info 
 
-그래서 실제로는 로깅을 할 때 따로 라이브러리를 사용한다.  
+#hello.springmvc 패키지와 그 하위 로그 레벨 설정 
+logging.level.hello.springmvc=debug 
+```
 
-자바 개발자들을 위한 로깅 라이브러리는 다양하므로, 직접 로그를 출력하는 기능을 개발할 필요는 없다고 한다.  
+## ⑤ 올바른 로그 사용법
+log.debug("data="+data)와 같은 방식은 사용하지 않는다
+- 로그 출력 레벨을 info로 설정해도, 실제로는 해당 코드에 있는 "data="+data가 실행된다.  
+  결과적으로 문자 연산이 발생한다. 의도치 않게 불필요한 연산 작업을 수행시키는 꼴이다.  
+  로그가 많다면, 문제가 발생할 여지가 있다.
+- log.debug("data={}", data)와 같은 방식을 사용한다
+  로그 출력 레벨을 info로 설정하면 아무일도 발생하지 않는다.  
+  따라서, 의미없는 연산이 발생하지 않는다. 더 효율적으로 리소스를 사용할 수 있다.  
 
-다만, 다양한 라이브러리들 중, 적합한 것을 고르는 안목이 필요하다.  
+## ⑥ 로그 사용시 장점
+시스템 콘솔로 직접 출력하는 것 보다 로그를 사용하면 다음과 같은 장점이 있다. 실무에서는 항상 로그를 사용한다고 한다.
+
+1. 쓰레드 정보, 클래스 이름 같은 부가 정보를 함께 볼 수 있고, 출력 모양을 조정할 수 있다.
+2. 로그 레벨에 따라 개발 서버에서는 모든 로그를 출력하고, 운영서버에서는 출력하지 않는 등 로그 내용을 상황에 맞게 조절할 수 있다.
+3. 시스템 아웃 콘솔에만 출력하는 것이 아니라, 파일이나 네트워크 등, 로그를 별도의 위치에 남길 수 있다.  
+  특히, 파일로 남길 때는 날짜나 특정 용량을 기준으로 로그를 분할하는 것도 가능하다.
+4. 성능도 일반 System.out보다 좋다. (내부 버퍼링, 멀티 쓰레드 등등) 그래서 실무에서는 꼭 로그를 사용한다고 한다.  
+
    
    
-    
-이제 자주 사용되는 로그 라이브러리들을 살펴보려고 한다.  
-
-### 1) java.util.logging
-
-JDK 1.4부터 포함된 표준 로깅 API이다. 별도의 라이브러리를 추가할 필요가 없다.  
-
-하지만 기능이 많이 부족하여 다른 로그 라이브러리를 더 많이 사용한다.  
-
-### 2) Apache Commons logging
-
-아파치 재단의 Commons 라이브러리 중 로그 출력을 제공하는 라이브러리다.
-
-### 3) Log4j
-
-아파치 재단에서 제공하며, 가장 많이 사용되는 라이브러리다.
-
-### 4) Logback
-
-Log4j를 개발한 Ceki Gulcu가 Log4j의 단점을 개선하고 기능을 추가하여 개발한 로깅 라이브러리다.
-  
-  
-이렇게 로깅 관련 라이브러리는 굉장히 다양하다.  
-
-SLF4J는 이러한 라이브러리들을 하나의 통일된 방식으로 사용할 수 있는 방법을 제공하고 있다.  
-
-SLF4J는 로깅 Facade(퍼사드)이다. 로깅에 대한 추상 레이어를 제공하는 interface의 모음이다.  
-
-SLF4J는 다음 글에서 이어보도록 하겠다.  
+스프링 부트가 제공하는 로그 기능은 아래 링크에서 확인할 수 있다.
+- https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot- features.html#boot-features-logging
