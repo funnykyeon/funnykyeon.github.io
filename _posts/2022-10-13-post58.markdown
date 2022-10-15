@@ -1,5 +1,5 @@
 ---
-title: "EC2를 연결한 개인도메인에 HTTPS적용"
+title: "EC2를 연결한 개인도메인에 HTTPS적용 (수정)"
 date: 2022-10-13
 last_modified_at: 2022-10-13
 toc: true
@@ -59,33 +59,31 @@ https://www.gabia.com/
 
 EC2인스턴스 존재한다는 전제하에 Route53에 접속하여 호스팅 영역을 생성한다.   
 
-![image](https://user-images.githubusercontent.com/99777315/195521576-2ccff4b5-f3e7-44b4-ba9d-7522a805980b.png)  
+<img width="646" alt="image" src="https://user-images.githubusercontent.com/99777315/195964472-730f4964-68de-4fee-83c6-4919e1af2e8c.png">    
 
 생성 후 아래 NS에 4개의 값을 가비아에 네임서버에 입력해준다.  
 
-![image](https://user-images.githubusercontent.com/99777315/195522207-72f3f56d-3294-40f7-96c7-9f00319dcf9a.png)  
-![image](https://user-images.githubusercontent.com/99777315/195527034-70bd179a-c1c1-4f7a-a729-969339e4537e.png)  
-
-설정하였다면 Route53에서 레코드생성을 하여 값에 EC2 인스턴스에 IP주소를 넣어준다.  
-
-![image](https://user-images.githubusercontent.com/99777315/195527343-2fff1091-9968-483d-b7e3-7948b7e8cabf.png)  
+![image](https://user-images.githubusercontent.com/99777315/195522207-72f3f56d-3294-40f7-96c7-9f00319dcf9a.png){: width="65%" height="65%"}  
+![image](https://user-images.githubusercontent.com/99777315/195527034-70bd179a-c1c1-4f7a-a729-969339e4537e.png){: width="65%" height="65%"}    
   
-    
-
+  
 ## AWS Certificate Manager
 
 인증서를 발급받을 위해 Certificate Manager 메뉴로 진입 후 
-요청 -> 퍼블릭 인증서 요청 -> 도메인이름 추가(*.구매도메인.com) -> 나머지 기본값으로 작성 후 요청  
+요청 -> 퍼블릭 인증서 요청 -> 도메인이름 추가(구매도메인.com) -> 나머지 기본값으로 작성 후 요청  
 반드시 DNS 검증 으로 해야한다.  
 
-![image](https://user-images.githubusercontent.com/99777315/195528138-e78bdf63-4a59-4169-a26c-4ce1de17df90.png)  
+<img width="875" alt="image" src="https://user-images.githubusercontent.com/99777315/195964404-2889e141-597d-4ab5-bf1f-79a0d8c800f6.png">{: width="65%" height="65%"}      
+
 
 생성한다면 검증대기중으로 나온다. 해당 인증서 ID로 접근하여 Route 53에서 레코드 생성해준다.  
 
-![image](https://user-images.githubusercontent.com/99777315/195528830-a5744cad-f62c-46d6-8f3c-75d4f5a8eee3.png)  
+![image](https://user-images.githubusercontent.com/99777315/195528830-a5744cad-f62c-46d6-8f3c-75d4f5a8eee3.png){: width="65%" height="65%"}      
 
 그리고 해당 인증서 클릭한 후 Route 53에서 레코드 생성 버튼을 클릭한다.  
 약 5~20분 정도면 검증이 완료된다.  
+
+<img width="1309" alt="image" src="https://user-images.githubusercontent.com/99777315/195964625-ceadf6d5-648e-4036-a5ce-7351548ab2a1.png">  
   
     
     
@@ -93,9 +91,8 @@ EC2인스턴스 존재한다는 전제하에 Route53에 접속하여 호스팅 �
 
 EC2 페이지에서 왼쪽 메뉴바를 보면 로드밸런서가 있으니 진입 후 로드밸런서 생성을 해주면된다.  
 
-![image](https://user-images.githubusercontent.com/99777315/195531145-4fdad245-81c5-4590-966b-89445e4a4791.png)  
-
-![image](https://user-images.githubusercontent.com/99777315/195531434-bee442ff-bb92-4dc7-957e-cbc9dc16a63e.png)  
+![image](https://user-images.githubusercontent.com/99777315/195531145-4fdad245-81c5-4590-966b-89445e4a4791.png){: width="65%" height="65%"}      
+  
 
 - Schema : internet Interfacing
 - IP address type : ipv4
@@ -104,30 +101,32 @@ EC2 페이지에서 왼쪽 메뉴바를 보면 로드밸런서가 있으니 진�
 - Listner and Routing : 타깃 그룹을 만들고, HTTP와 HTTPS를 둘다 선택한다.
   - 타깃그룹 생성시 네임입력후 디폴트로 넘어가면 된다.  
 
-    ![image](https://user-images.githubusercontent.com/99777315/195539097-abeeef25-810c-473c-ba6a-383860d7002f.png)  
+    <img width="293" alt="image" src="https://user-images.githubusercontent.com/99777315/195964905-07b16f6e-5892-46c2-bfca-833477d96d4f.png">{: width="65%" height="65%"}  
     
-    인스턴스 선택후 80포트와 443포트를 Include as pending below 해주고 생성해준다.  
+    인스턴스 선택후 8080포트만 Include as pending below 해주고 생성해준다.  
+    인스턴스 목록에 2개가 있는 이유는 내가쓰고있는것 1개 테스트용 1개이다.  
+    지금 처음만드는 사람은 1개가 정상이다.  
 
-    ![image](https://user-images.githubusercontent.com/99777315/195539852-970c4aa7-2fa9-4889-847a-b68052468328.png)  
+    <img width="1329" alt="image" src="https://user-images.githubusercontent.com/99777315/195964989-c305dfd9-1602-463e-8e4a-b2075f25b44e.png">  
 
-    ![image](https://user-images.githubusercontent.com/99777315/195540651-9b6efbf2-22d8-4c31-ad48-4b2dba7f35a4.png)  
+    <img width="537" alt="image" src="https://user-images.githubusercontent.com/99777315/195965107-22f28577-cbbc-4b6d-b1da-115539f0bcb3.png">  
 - Security Listner : 전에 발행했던 인증서를 선택한다.  
 
 
-생성후 리스너탭으로 이동하여 HTTP : 80 규칙 보기/편집으로 이동 후 원래있던 액션을 삭제하고  
+생성후 리스너탭으로 이동하여 HTTP : 8080 규칙 체크 -> 편집으로 이동 후 원래있던 액션을 삭제하고  
 아래 이미지와 같이 Redirect 해준다. 이유는 http로 접근시 https로 이동해주기 위함이다.  
 
-![image](https://user-images.githubusercontent.com/99777315/195542730-cd0ebd3c-b5d1-41f4-ac88-b0bb98f78c84.png)  
-![image](https://user-images.githubusercontent.com/99777315/195542961-79d94e2a-e464-493d-9246-d3b885a5ecd9.png)  
+<img width="648" alt="image" src="https://user-images.githubusercontent.com/99777315/195965165-01fa2f9c-8b12-4cd9-ba59-f1f81a35c1f3.png">  
   
     
     
 ## AWS Route53
 
 Route53으로 이동하여 아래이미지와 같이 레코드를 생성
-![image](https://user-images.githubusercontent.com/99777315/195543767-c9e41f36-771f-4ae6-a8c6-1d2dd2dc6448.png)  
+<img width="1043" alt="image" src="https://user-images.githubusercontent.com/99777315/195965260-106ea715-c287-4247-9389-8854f8a4589a.png">  
 
 
-여기까지 진행했다면 정상적으로 SSL 인증서 적용이 완료이다.
+여기까지 진행했다면 정상적으로 SSL 인증서 적용이 완료이다.  
+http://test.com:8080 진입시 https://test.com:443 으로 리다이렉트되는걸 확인할수있다.  
 
 
