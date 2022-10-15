@@ -12,7 +12,7 @@ tags:
 오늘은 Postman으로 WebSocket 테스트 하는 방법을 알아보자  
 WebSocket이 구현되있다는 전제하에 포스팅하겠다.  
 
-File -> New 선택후 WebSocket Request를 선택해주자  
+File -> New 선택후 WebSocket Request를 선택해주자   
 
 <img width="1188" alt="image" src="https://user-images.githubusercontent.com/99777315/195709005-0fa25585-de5d-4eac-a6bb-a9f2fb1de0f2.png">{: width="65%" height="65%"}    
 
