@@ -1,0 +1,116 @@
+---
+title: "Jasypt"
+date: 2022-10-17
+last_modified_at: 2022-10-17
+categories: 
+  - Java
+tags:
+  - [Library,Jasypt]
+---
+
+## Jasypt란?  
+
+Jasypt는 개발자가 암호화 작동 방식에 대한 깊은 지식 없이도 최소한의 노력으로 자신의 프로젝트에  
+기본 암호화 기능을 추가할 수 있도록 하는 Java 라이브러리이다.  
+<[jasypt.org 링크](http://www.jasypt.org/)>   
+
+## 특징 
+
+- 단방향 및 양방향 암호화 모두에 대한 높은 보안, 표준 기반 암호화 기술  
+암호, 텍스트, 숫자, 바이너리 암호화
+- Hibernate와의 투명한 통합
+- Spring 기반 애플리케이션 으로의 통합에 적합 하고 Spring Security 와 투명하게 통합 가능
+- 애플리케이션(예: 데이터 소스) 구성을 암호화하기 위한 통합 기능
+- 다중 프로세서/다중 코어 시스템에서 고성능 암호화 를 위한 특정 기능
+- 모든 JCE 공급자와 함께 사용할 수 있는 API를 열수있다.
+
+
+## Dependency 추가
+
+Gradle
+```java
+implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+```
+
+## Jasypt 설정 및 Bean 등록
+
+코드에 KEY는 테스트임으로 상수로 작성하였다.  
+실제 운영 시 보안을 위해 운영체제 환경변수, java -jar 명령어로 애플리케이션 실행 시 전달하여 사용한다.  
+
+예시)  
+@Value("${jasypt.key}")라면 java -jar 배포시 --jasypt.key=값을 추가해야한다.  
+
+```java
+@Configuration
+public class JasyptConfig {
+    private static final String KEY = "T579120431243E1231S1231T";
+    private static final String ALGORITHM = "PBEWithMD5AndDES";
+
+    @Bean("jasyptStringEncryptor")
+    public StringEncryptor stringEncryptor() {
+        PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
+        SimpleStringPBEConfig config = new SimpleStringPBEConfig();
+        config.setPassword(KEY); // 암호화할 때 사용하는 키
+        config.setAlgorithm(ALGORITHM); // 암호화 알고리즘
+        config.setKeyObtentionIterations("1000"); // 반복할 해싱 회수
+        config.setPoolSize("1"); // 인스턴스 pool
+        config.setProviderName("SunJCE"); // 프로바이더
+        config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator"); // salt 생성 클래스 지정
+        config.setStringOutputType("base64"); // 인코딩
+        encryptor.setConfig(config); // 설정 정보 Set
+        return encryptor;
+    }
+}
+```
+
+## jasypt 암,복호화 사이트
+
+해당 사이트로 사용할 값을 암호화하여 프로퍼티에 ENC(설정 값)을 넣어준다.  
+
+- Plain-Text: TEST
+- Type: Two Way Encryption
+- Secret-Key: T579120431243E1231S1231T
+
+<img width="838" alt="image" src="https://user-images.githubusercontent.com/99777315/196123881-6a60c054-227e-49e5-90f5-147a6ebfcb0b.png">  
+
+
+## Application.properties
+properties.test.value = ENC(Of+1o/1hwuPVtE260x0Npg==)  
+
+## 테스트
+
+JasyptTest class 생성 후 프로퍼티 값을 get 할 메서드를 생성한다.  
+```java
+@Component
+public class JasyptTest {
+
+    @Value("${properties.test.value}")
+    private String propertiesTestValue;
+
+    public String getPropertiesTestValue() {
+        return propertiesTestValue;
+    }
+}
+```
+
+## @SpringbootTest
+
+암호화하기 전 값 TEST와 프로퍼티로 가져온 값이 같은지 equalTo로 검증해보자.  
+
+```java
+@SpringBootTest
+class JasyptApplicationTests {
+
+    @Autowired
+    private JasyptTest jasyptTest;
+
+    @Test
+    void jasypt_테스트() {
+        assertThat("TEST").isEqualTo(jasyptTest.getPropertiesTestValue());
+    }
+}
+```
+
+## 결과  
+
+<img width="1069" alt="image" src="https://user-images.githubusercontent.com/99777315/196134311-396095d9-d57f-4ac3-8012-bc1471a60e88.png">
