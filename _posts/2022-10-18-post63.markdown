@@ -1,0 +1,72 @@
+---
+title: "JUnit5 (JUnit4와 차이)"
+date: 2022-10-17
+last_modified_at: 2022-10-17
+categories: 
+  - Java
+tags:
+  - [JUnit]
+---
+## JUnit이란?  
+JUnit(제이유닛)은 자바 프로그래밍 언어용 유닛 테스트 프레임워크이다.   JUnit은 테스트 주도 개발 면에서 중요하며 SUnit과 함께 시작된 XUnit이라는 이름의 유닛 테스트 프레임워크 계열의 하나이다.  
+
+<[위키백과 링크](https://ko.wikipedia.org/wiki/JUnit/)>   
+
+## 특징 
+
+JUnit 5 = JUnit Platform + JUnit Jupiter + JUnit Vintage
+
+Junit4가 단일 jar였던 것에 반해, Junit5는 Junit Platform, Junit Jupiter, Junit Vintage 모듈 세 가지로 구성되어 있다.
+
+- Junit Platform
+    - JVM에서 동작하는 테스트 프레임워크입니다. 테스트를 발견하고 계획을 생성하고 결과를 보고하는 TestEngine 인터페이스를 정의한다.
+- Junit Jupiter
+    - Junit5 TestEngine의 실제 구현체입니다. Junit5 기반의 테스트를 실행시키기 위한 TestEngine을 Platform에 제공한다.
+- Junit Vintage
+    - TestEngine에서 Junit3 및 Junit4 기반 테스트를 실행하기 위한 기능을 제공한다.
+
+Junit5는 Java 8 이상의 버전을 요구한다.  
+
+
+## Junit 5 Annotation
+
+Junit5에서 제공하는 org.junit.jupiter.api 패키지 내의 어노테이션을 설명한다.  
+
+- @Test  
+    - 해당 어노테이션을 달아둔 메서드가 테스트 메서드임을 나타낸다.  
+- @BeforeEach
+    - 각각의 @Test, @RepeatedTest, @ParameterizedTest, @TestFactory 전에 실행된다.
+- @AfterEach
+    - 각각의 @Test, @RepeatedTest, @ParameterizedTest, @TestFactory 후에 실행된다.
+- @BeforeAll
+    - 모든 @Test, @RepeatedTest, @ParameterizedTest, @TestFactory 전에 실행된다.
+- @AfterAll
+    - 모든 @Test, @RepeatedTest, @ParameterizedTest, @TestFactory 후에 실행된다.
+- @ExtendWith
+    - 확장을 선언적으로 등록하는데 사용됩니다. Extendtion 뒤에 인자로 확장할 Extension을 추가하여 사용한다.
+    - Spring을 사용할 경우 @ExtendWith(SpringExtension.class)와 같이 사용한다.
+- @Disabled
+    - 테스트 클래스 또는 테스트 메서드를 비활성화 하는데 사용됩니다.
+- @ParameterizedTest
+    - 메서드가 매개변수가 있는 테스트임을 나타낸다.
+- @RepeatedTest
+    - 메서드가 반복 테스트를 위한 테스트 템플릿임을 나타낸다.
+- @TestFactory
+    - 메서드가 동적 테스트를 위한 테스트 팩토리임을 나타낸다.
+- @TestMethodOrder
+    - 테스트 메서드 실행 순서를 구성하는데 사용된다.
+- @DisplayName
+    - 테스트 클래스 또는 테스트 메서드에 대한 사용자 지정 표시 이름을 정해줄 때 사용된다.
+
+
+## Junit 4 vs Junit 5
+
+Assertion 의 위치가 Junit5에서는 org.junit.jupiter.api.Assertions으로 변경됬다.  
+AssertJ, Hamcrest, Trust에서 제공하는 org.junit.Assert는 그대로 사용할 수 있다.
+- @Before과 @After 어노테이션이 사라지고, 각각 @BeforeEach와 @AfterEach로 변경됬다.
+- @BeforeClass와 @AfterClass 어노테이션이 사라지고, @BeforeAll과 @AfterAll로 변경됬다.
+- @Ignore이 사라지고, @Disabled로 변경됬다.
+    단, 이 경우 @EnableJUnit4MigrationSupport 어노테이션을 붙여준다.
+- @Category가 사라지고, @Tag로 변경됬다.
+- @RunWith이 사라지고 @ExtendWith으로 변경됬다.
+- @Rule과 @ClassRule이 사라지고, @ExtendWith과 @RegisterExtention으로 대체되었다.
