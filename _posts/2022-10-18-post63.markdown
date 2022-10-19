@@ -1,7 +1,7 @@
 ---
 title: "JUnit5 (JUnit4와 차이)"
-date: 2022-10-17
-last_modified_at: 2022-10-17
+date: 2022-10-18
+last_modified_at: 2022-10-18
 categories: 
   - Java
 tags:
