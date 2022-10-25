@@ -1,0 +1,137 @@
+---
+title: "Spring Boot Swagger 3.0 적용"
+date: 2022-10-25
+last_modified_at: 2022-10-25
+categories: 
+  - Spring
+tags:
+  - [Swagger]
+---
+> ## Swagger
+
+개발자가 REST 웹 서비스를 설계, 빌드, 문서화, 소비하는 일을 도와주는 대형 도구 생태계의 지원을 받는 오픈 소스 소프트웨어 프레임워크이다.   
+대부분의 사용자들은 스웨거 UI 도구를 통해 스웨거를 식별하며 스웨거 툴셋에는 자동화된 문서화, 코드 생성, 테스트 케이스 생성 지원이 포함된다.  
+[위키백과 링크](https://ko.wikipedia.org/wiki/%EC%8A%A4%EC%9B%A8%EA%B1%B0_(%EC%86%8C%ED%94%84%ED%8A%B8%EC%9B%A8%EC%96%B4))  
+간단하게 설명하자면 API 문서를 만들어주는 라이브러리이다 [https://swagger.io/](https://swagger.io/)  
+예시 [스웨거의 Live Demo 참조](https://petstore.swagger.io/)  
+
+![image](https://user-images.githubusercontent.com/99777315/197765900-176739c5-51bb-4858-991f-5cb0ad80935a.png){: width="60%" height="60%"}    
+
+- 단순 문서 뿐만 아니라 API를 문서내에서 parameter를 넣어가며 바로바로 실행 해볼 수 있다.
+- rest api 제작 후 따로 테스트 페이지나 postman으로 실행해보는 대신 swagger 문서 만들어서 실행 가능하다.
+- 복잡하지 않은 시스템이라면 rest api 서버에 swagger를 적용시켜두고, 해당 api를 호출하는 작업자에게 swagger 문서 url만 보내서 작업하게 할 수 있다.  
+![image](https://user-images.githubusercontent.com/99777315/197766772-e8a849c8-0ff6-47ea-a245-d2554b5345d7.png)  
+
+## 스프링부트에 Swagger 적용
+
+1. Gradle 추가
+
+```java
+implementation 'io.springfox:springfox-boot-starter:3.0.0'
+implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+```
+
+2. 설정 클래스 (스프링 @Configuration 어노테이션 사용)
+
+- '.basePackage()' 부분에 Swagger를 적용할 패키지 지정. 해당 패키지 이하의 모든 rest api가 자동으로 swagger 문서로 생성된다.  
+(이하 예시에서는 'com.nahwasa.iot.controller' 패키지 이하를 모두 적용)  
+```java
+@Configuration
+@EnableWebMvc
+public class SwaggerConfig {
+
+    private ApiInfo swaggerInfo() {
+        return new ApiInfoBuilder().title("IoT API")
+                .description("IoT API Docs").build();
+    }
+
+    @Bean
+    public Docket swaggerApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .consumes(getConsumeContentTypes())
+                .produces(getProduceContentTypes())
+                .apiInfo(swaggerInfo()).select()
+                .apis(RequestHandlerSelectors.basePackage("com.nahwasa.iot.controller"))
+                .paths(PathSelectors.any())
+                .build()
+                .useDefaultResponseMessages(false);
+    }
+
+    private Set<String> getConsumeContentTypes() {
+        Set<String> consumes = new HashSet<>();
+        consumes.add("application/json;charset=UTF-8");
+        consumes.add("application/x-www-form-urlencoded");
+        return consumes;
+    }
+
+    private Set<String> getProduceContentTypes() {
+        Set<String> produces = new HashSet<>();
+        produces.add("application/json;charset=UTF-8");
+        return produces;
+    }
+}
+```
+이 때, 해당 패키지 내에 포함되지만 Swagger 문서로 만들고 싶지 않을 경우  
+(예를들어 테스트용 컨트롤러나 api 작업자에게 보이기 싫은 api 등)  
+해당 컨트롤러에 @ApiIgnore 어노테이션을 추가하여 제외시킬 수 있다.
+예시)  
+```java
+    @ApiIgnore
+    @GetMapping("/{Id}")
+    public List<TestDto> getAllTest(@PathVariable String Id) {
+        return Service.getAllTest(UUID.fromString(Id));
+    }
+```
+3. Swagger에 API 설명 작성
+![image](https://user-images.githubusercontent.com/99777315/197767562-16ba8b72-fabe-4f3d-94ed-2c026cc26dfe.png)  
+
+```java
+    @ApiOperation(value="M2-9 전체 스타일리스트 정보 조회", notes="시스템에 등록된 전체 스타일리스트 정보 조회한다.")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "API 정상 작동"),
+            @ApiResponse(code = 500, message = "서버 에러")
+    })
+    @RequestMapping(value="/admin/v1.0/store/{storeRegisterId}/beautician", method={RequestMethod.GET})
+    @GetMapping("/{Id}")
+    public List<TestDto> getAllTest(@PathVariable String Id) {
+        return Service.getAllTest(UUID.fromString(Id));
+    }
+```
+
+4. parameter 설명도 작성 가능하다.  
+
+```java
+@Data
+public class Id {
+    @ApiModelProperty(value = "멤버id", dataType = "string", required = true)
+    String mbId;
+    @ApiModelProperty(value = "스토어id")
+    String storeRegisterId;
+	...
+}
+```
+
+5. 기본 주소는 '/swagger-ui/index.html' 이지만 아래와 같이 redirect 등으로 변경하면 사용하기나 전달하기 좋다.  
+
+```java
+@Controller
+@RequestMapping("/api/usage")
+class SwaggerRedirector {
+    @GetMapping
+    public String api() {
+       return "redirect:/swagger-ui/index.html"; 
+    }
+}
+```
+
+## 에러시 
+
+```java
+Failed to start bean 'documentationPluginsBootstrapper'; nested exception is java.lang.NullPointerException
+```
+Spring boot 2.6버전 이후에 spring.mvc.pathmatch.matching-strategy 값이 ant_apth_matcher에서 path_pattern_parser로 변경되면서 몇몇 라이브러리(swagger포함)에 오류가 발생한다고 한다.
+application.properties에 아래 코드를 넣어주면된다.
+
+```java
+spring.mvc.pathmatch.matching-strategy = ANT_PATH_MATCHER
+```
