@@ -1,0 +1,55 @@
+---
+title: "WebSocket"
+date: 2022-10-29
+last_modified_at: 2022-10-29
+categories: 
+  - CS
+tags:
+  - [WebSocket]
+---
+# 웹소켓이란 ?
+
+> 🧺 웹소켓은 full-duplex 통신을 지원하는 프로토콜로, 일반 소켓 통신과는 다르게 bytes 스트림 대신 UTF8 포멧의 메시지 스트림을 사용한다.  
+
+이전의 HTTP 통신과는 다르게 이중통신(full-duplex 통신) 즉 수신과 송신을 동시에 처리가 가능한 통신으로, socket  
+connection을 유지하기 떄문에 양방향 통신, 데이터 전송이 가능하며, HTML5에 포함된 프로토콜이다.  
+
+## 1. 양방향 통신(Full-Duplex)
+
+- 데이터 송수신을 **동시에 처리**할 수 있는 통신
+- 클라이언트와 서버가 서로에게 원할 때 데이터를 주고 받을 수 있음
+
+## 2. 실시간 네트워킹(Real Time-Networking)
+
+- 웹 환경에서 연속된 데이터를 빠르게 노출
+- 여러 단말기에 빠르게 데이터를 교환
+
+<img width="670" alt="image" src="https://user-images.githubusercontent.com/99777315/198826746-12088f6e-0885-4bf8-ac26-b928543b7bd5.png">  
+
+
+웹소켓 연결은 HTTP프로토콜을 통해 이루어진다. HANDSHAKE과정이 성공적으로 끝나면 HTTP를 웹소켓 프로토콜로 바꾸는 protocol switching 과정이 진행된 후, 웹소켓을 위한 소켓을 이용하여 통신을한다.
+
+통신은 텍스트와 바이너리가 있으며 모두 양방향 통신이 가능하다. 데이터의 구조는 텍스트 통신의 경우 UTF-8데이터를 포함하며, 시작 바이트가 0x00, 끝 바이트가 0xFF로 끝난다.
+
+> 💻 HTTP VS 웹소켓
+
+
+## HTTP
+
+HTTP는 인터넷에서 서버와 클라이언트가 데이터를 주고 받을 때 사용하는 약속이다. HTTP의 특징 중 connectionless 때문에 클라이언트 요청에 따라 서버가 응답을 하면 연결이 끊긴다.
+
+서버가 다수의 클라이언트와 연결을 유지한다면 서버에 많은 리소스 낭비가 생기는데 HTTP약속에서는 이러지 않고 응답을 주면 곧바로 연결을 끊기에 리소스 낭비를 줄인다는 점이 있다.
+
+→ 클라이언트의 요청이 없으면 새로운 정보가 들어와도 페이지는 받을 수 없기 때문에 나왔던 기술들(HTTP Comet)
+
+- **Polling**  
+  클라이언트가 평범한 http request를 서버로 계속 날려서 이벤트 내용을 전달받는 방식이다.
+  <img width="481" alt="image" src="https://user-images.githubusercontent.com/99777315/198826857-a1e413b3-1c1b-4156-80e3-1c794aa6bfa2.png">  
+
+- **Long polling**  
+  클라이언트에서 서버로 HTTP Request를 날린다. 이상태로 계속 기다리다가 서버에서 해당 클라이언트로 전달할 이벤트가 있다면 그순간 response 메시지를 전달하면서 연결이 종료된다.  
+  <img width="480" alt="image" src="https://user-images.githubusercontent.com/99777315/198826883-eafe0fd6-c2db-4a04-9c80-864f1bdab3ff.png">  
+
+- **Streaming**  
+  Long Polling과 마찬가지로 클라이언트에서 서버로 일단 HTTP Request를 날린다. 서버에서 클라이언트로 이벤트를 전달할때 해당 요청을 끊지 않고 필요한 메시지만 보내기를(flush) 반복하는 방식이다.  하나의 TCP 포트에서 R/W가 되지 않는 단점이 있다.
+  <img width="481" alt="image" src="https://user-images.githubusercontent.com/99777315/198826913-09423f2c-4304-4e97-9d8c-917a411333aa.png">  
