@@ -1,0 +1,123 @@
+---
+title: "스프링 비동기 처리"
+
+date: 2022-10-31
+last_modified_at: 2022-10-31
+categories: 
+  - Spring
+tags:
+  - [비동기]
+---
+> ## 비동기 처리를 이해하기 위해 알면 좋은 개념
+<details>
+<summary>Process</summary>
+
+  - 실행중인 프로그램  
+  <br>
+  - OS에 의해 메모리 공간을 할당받아 실행  
+  <br>
+  - 프로그램에 사용되는 데이터, 메모리 등의 자원과 Thread로 구성  
+</details>
+
+<details>
+<summary>Thread</summary>
+
+  - 프로세스 내에서 작업을 수행하는 주체  
+  <br>
+  - CPU를 점유하는 최소단위 (Thread를 사용하지 않으면 최소 단위는 Process가 된다!)  
+  <br>
+  - 모든 Process 내에는 한 개 이상의 Thread가 존재하여 작업 수행 (Process내에 두 개 이상의 Thread가 존재하면 멀티스레드 프로세스라고 부른다!)  
+  <br>
+  - LWP ( Light Weight Process - Process에 비해 가벼움 )  
+  <br>
+  <h2 style='background-color:#d3d3d3'>Thread 구현 방법 (양자택일 X)</h2>  
+  <h3 style='background-color:#B9E0FD'>User Thread</h3>
+  - User-level에서 라이브러리로 구현  
+  <br>
+      → 컴파일시 라이브러리를 링크해서 같이 컴파일  
+  <br>
+  - Java Thread, POSIX Pthread, window Thread  
+
+  <h3 style='background-color:#B9E0FD'>Kerner Thread</h3>
+  - Kerner-level에서 kernel이 지원하는 thread
+  <br>
+  - Linux, window, solaris
+
+  <h2 style='background-color:#d3d3d3'>User thread - Kernel thread mapping</h2>  
+  <h3 style='background-color:#B9E0FD'>Many-To-One</h3>
+  - kerner thread를 만들 때 같이 생성되는 Process 안에 여러개의 User thread를 만듦
+  <br>
+  - 하나의 thread가 block되면 모든 thread가 block 됨
+  <h3 style='background-color:#B9E0FD'>One-To-One</h3>
+  - 하나의 user thread를 만들면 하나의 kerner thread가 자동으로 mapping 됨
+  <h3 style='background-color:#B9E0FD'>Many-To-Many</h3>
+  - OS가 kerner thread를 만들고 사용자가 user thread를 만들면 만들어 놓은 kernel thread에 mapping
+  <br>
+  - user thead의 수가 kernel thread의 수보다 많거나 같음
+</details>
+
+<details>
+<summary>Thread Pool</summary>
+
+- 스레드를 미리 만들어 놓은 하나의 집합
+<br>
+- 작업 요청이 늘어나도 스레드의 전체 개수가 늘어나지 않음
+<br>
+    →프로그램 성능 저하 방지
+<br>    
+- 크기를 너무 크게 지정하면 메모리 낭비 야기함
+<br>    
+<img src="https://user-images.githubusercontent.com/99777315/199057912-01e11dac-be18-47f8-a0b3-03cfb09eae11.png" alt="image">
+</details>
+
+> ## 스프링 부트 비동기 처리
+
+### *[AsyncConfigurerSupport](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/annotation/AsyncConfigurerSupport.html#getAsyncExecutor--)*  
+
+- [AsyncConfigurer](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/annotation/AsyncConfigurer.html)를 구현할 때 상속 받는 class  
+- getAsyncExecutor()  
+  - Executor 메소드를 호출하여 비동기 처리를 할 때 이 메소드를 오버라이드 하여 thread pool 등을 재설정 가능
+
+### *[ThreadPoolTaskExecutor](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/concurrent/ThreadPoolTaskExecutor.html)*
+- setCorePoolSize  
+  - ThreadPoolExecutor의 코어 풀 크기 설정
+  - 기본적으로 관리할 Thread 숫자
+
+- setMaxPoolSize  
+  - core pool과 queue가 다 찼을 때 최대로 생성할 Thread 숫자  
+  - 기본값은 Integer.MAX_VALUE  
+
+- setQueueCapacity  
+  - core pool이 다 찼을 때(core pool의 크기를 넘어서는 tesk가 들어왔을 때) tesk가 쌓일 수 있는 갯수  
+```java
+@Configuration
+@EnableAsync// spring 메소드 비동기 기능 활성화
+public class AsyncConfig extends AsyncConfigurerSupport{
+
+	@Override
+	public Executor getAsyncExecutor(){
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		//기본적으로 실행 대기하는 thread의 갯수 설정
+		executor.setCorePoolSize(2);
+		//동시동작하는 최대 Thread pool 크기
+		executor.setMaxPoolSize(10);
+		//thread pool que 크기
+		executor.setQueueCapacity(500);
+		// spring이 생성하는 thread의 접두사 설정
+		executor.setThreadNamePrefix("mail-async-");
+		//initialize 안해주면 executor 사용 불가
+		executor.initialize();
+		return executor;
+	  }
+  }
+  ```
+
+- @Async
+  - 비동기 처리를 하고자 하는 메소드 위에 추가  
+  - 지정된 비동기 작업을 위한 어노테이션  
+  ```java
+  @Async
+  public void assessmentMailBuilder(MailDtomailDto) throws MessagingException{
+    //서비스 로직
+  }
+  ```
