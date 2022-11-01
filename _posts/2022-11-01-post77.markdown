@@ -1,0 +1,47 @@
+---
+title: "CloudWatch를 이용한 결제 알람 만들기"
+
+date: 2022-11-01
+last_modified_at: 2022-11-01
+categories: 
+  - AWS
+tags:
+  - [CloudWatch]
+---
+수강생분중에 AWS 해킹 사고가 있었다. 우선 결제수단으로 등록한 카드를 제거하거나 한도를 줄여놔야 결제가 되지않는다.  
+그 후에 Support Center에 문의하여 AWS에서 요구하는 보안설정을 절차대로 진행하였다.  
+그중 결제알람 등록하는 부분이 필요한것같아 포스팅해본다.  
+
+## 결제알람을 만들어보자
+
+1. 우측 상단 사용자 이름을 누르면 서브 메뉴가 나오는데 결제 대시보드 메뉴를 선택한다.
+  ![image](https://user-images.githubusercontent.com/99777315/199214928-ee5ea808-34f4-4ca9-8814-abee0d1eceab.png)  
+
+2. 좌측 메뉴에서 결제 기본 설정으로 이동 후 하단의 이미지처럼 체크하고 이메일주소를 등록해주고 저장해준다.  
+  ![image](https://user-images.githubusercontent.com/99777315/199215265-fc3ba6d9-c33b-45fe-a0fd-e132b804fcb1.png)  
+
+3. CloudWatch로 이동 후 경보 -> 모든경보로 들어와서 경보생성을 해준다.  
+  ![image](https://user-images.githubusercontent.com/99777315/199217856-932235f2-a4e0-48e0-9064-e0f46bdfe2c9.png)  
+
+4. 지표선택 클릭후 아래 이미지화면이 나올것이다. 하단 지표에서 결제 -> 예상 요금 합계 -> USD 달러를 체크해준다.  
+  ![image](https://user-images.githubusercontent.com/99777315/199218254-e63649ee-af51-4a76-bae7-39cc3248d181.png)  
+  ![image](https://user-images.githubusercontent.com/99777315/199218351-e2db05fe-d6c6-497f-a307-9a25e87037a0.png)  
+  ![image](https://user-images.githubusercontent.com/99777315/199218417-3ab242ec-edc8-491f-91f9-8dc57fce7aae.png)  
+
+5. 지표 및 조건 지정에서 임계값을 설정한다. 나는 10달러로 설정 후 진행했다.  
+  ![image](https://user-images.githubusercontent.com/99777315/199221153-315589e3-10e1-4802-a4be-dab0484172ff.png)  
+
+6. 알림 작업구성에서 새 주제 생성을 선택하고 알림을 수신할 이메일을 입력 후 주제생성 클릭해주고 다음을 클릭한다.  
+  ![image](https://user-images.githubusercontent.com/99777315/199221458-85034afc-0cd5-49f3-911b-0904ea2293e8.png)  
+
+7. 경보 이름, 경보 설명 입력해주고 다음을 눌러 진행한다.  
+  ![image](https://user-images.githubusercontent.com/99777315/199222177-abbcdb73-e911-4e2a-b288-b840130a9379.png)  
+
+8. 미리 보기 및 생성 화면에서 지금까지 만든 알림에 대한 상세정보를 볼 수 있다. 경보 생성 버튼을 눌러 경보를 생성한다.  
+  ![image](https://user-images.githubusercontent.com/99777315/199222631-feb4fced-b475-43b4-9ad5-51063e29abd4.png)  
+
+9. 경보 생성 완료
+  ![image](https://user-images.githubusercontent.com/99777315/199223088-408715f2-f889-4fc4-9397-4a096694b436.png)  
+
+이렇게 간단한 설정으로 AWS해킹피해를 줄일수있다.
+
