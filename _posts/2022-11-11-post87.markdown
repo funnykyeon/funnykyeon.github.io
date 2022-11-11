@@ -1,0 +1,108 @@
+---
+title: "WebRTC란"
+date: 2022-11-11
+last_modified_at: 2022-11-11
+categories: 
+  - CS
+tags:
+  - [WebRTC]
+---
+
+## 1. WebRTC란 무엇일까?
+WebRTC(Web Real-Time Communication)는 웹 브라우저 간에 플러그인의 도움 없이 서로 통신할 수 있도록 설계된 API이다.  
+
+- 브라우저에서 별도의 소프트웨어 없이 비디오, 음성 및 일반 데이터가 피어간에 실시간으로 전송 가능하게 해주는 오픈 프레임워크
+- 보통 브라우저에서 실행할때 JavaScript API를 통해 실행할 수 있어 개발자들로 하여금 쉽게 RTC web app을 실행하는 것이 가능
+- W3C와 IETF에서 API레벨과 Protocol 레벨을 표준화함  
+
+## 2. WebRTC의 통신과정
+![image](https://user-images.githubusercontent.com/99777315/201326286-376ae27d-a184-4657-bac9-13b8a0b19818.png)   
+
+### WebRTC 통신과정
+1. Signaling을 통해 통신할 peer간 정보를 교환한다. ex) 세션 제어 메세지, 네트워크 구성정보, 미디어 기능 등의 정보  
+2. WebRTC를 사용해 연결을 맺고, peer의 단말에서 미디어를 가져와 교환한다.  
+
+
+### 시그널링
+WebRTC 는 P2P 연결을 통해 직접 통신하지만, 이를 중계해주는 과정이 필요하다. 이를 시그널링 이라 부른다. 그리고 이를 수행하는 서버를 시그널 서버라 칭한다. 시그널 서버는 채팅방과 같은 형태로 연결하고자 하는 Peer 들을 논리적으로 묶고 서로간에 SDP 와 Candidate 를 교환하여 준다.  
+
+시그널 서버는 개발하고자 하는 서비스의 성격에 맞게 SIP나 XMPP 등의 기존의 시그널링 프로토콜을 사용해도 되고 Ajax long polling이나 websocket 등의 적절한 쌍방향 통신 채널로 이를 구현하면 된다.  
+
+그렇지만 시그널링의 핵심은 비동기적으로 발생하는 Peer 들의 정보(SDP, Candidate)를 교환하는 일이다. 그러므로 전이중 통신을 지원하는 websocket 으로 이를 구현하는 것이 가장 적합하다.  
+
+
+### 시그널링의 역할
+다음과 같은 세가지의 정보를 교환하게 한다.  
+
+- Session control messages : 통신의 초기화, 종료, 그리고 에러 메시지
+- Network configuration : 외부에서 바라보는 IP와 포트 정보
+  - Candidate에 서로를 추가
+  - ICE 프레임워크를 사용하여 서로의 IP와 포트를 찾는 과정
+- Media capabilities : 상호 두 단말의 브라우저에서 사용 가능한 코덱, 해상도
+  - offer 와 answer 로직으로 진행
+  - 형식은 SDP (Session Description Protocol)
+
+
+
+
+## 3. 서버의 역할 (용어 총정리)
+P2P로 클라이언트끼리 통신을 한다해도 서버가 필요한 이유는 다음과 같다.
+
+- Signaling 사용자 탐색과 통신
+- 방화벽과 NAT 트래버셜
+- P2P 통신 중계서버
+
+### 방화벽과 NAT 트래버셜
+일반적인 컴퓨터에는 공인 IP가 할당되어 있지 않다. 그 원인으로는 방화벽(Firewall), 여러 대의 컴퓨터가 하나의 공인 IP를 공유하는 NAT, 유휴 상태의 IP를 일시적으로 임대받는 DHCP 때문이다. 이 때문에 단순히 공인 IP만을 알아낸다고 해서, 특정한 사용자를 가리킬 수는 없다. 따라서 공인 IP뿐만 아니라 해당 네트워크에 연결된 사설 IP 주소까지 알아내야 특정한 사용자를 지정할 수 있다.  
+
+일반적으로는 라우터가 NAT 역할을 한다. 외부에서 접근하는 "공인 IP와 포트 번호"를 확인하여 현재 네트워크 내의 사설 IP들을 적절히 매핑시켜준다. 따라서 어떤 브라우저 두 개가 서로 직접 통신을 하려면, 각자 현재 연결된 라우터의 "공인 IP 주소와 포트"를 먼저 알아내야 한다.  
+
+하지만 어떤 라우터들은 특정 주소나 포트와의 연결을 차단하는 방화벽 설정이 되어 있을 수도 있다. 이처럼 라우터를 통과해서 연결할 방법을 찾는 과정을 NAT 트래버셜(NAT traversal)이라고 한다.  
+
+
+### STUN
+![image](https://user-images.githubusercontent.com/99777315/201326342-955c05f8-ec02-4d96-9a33-4c98ebe0335a.png)  
+
+NAT 트래버셜 작업은 STUN(Session Traversal Utilities for NAT) 서버에 의해 이루어진다. STUN 방식은 단말이 자신의 "공인 IP 주소와 포트"를 확인하는 과정에 대한 프로토콜이다. 클라이언트가 STUN 서버에 요청을 보내면 공인 IP주소 와 함께 통신에 필요한 정보들을 보내주는데, 클라이언트는 이를 이용해 다른 기기와 통신한다. 하지만 이러한 경우에도 통신이 되지 않는다면 TURN 서버로 넘기게 된다.
+
+
+
+
+### TURN
+![image](https://user-images.githubusercontent.com/99777315/201327273-e1c2fa3a-3773-4730-9447-558f8a5ff86d.png)  
+
+STUN 서버를 이용하더라도 항상 자신의 정보를 알아낼 수 있는 것은 아니다. 어떤 라우터들은 방화벽 정책을 달리 할 수도 있고, 이전에 연결된 적이 있는 네트워크만 연결할 수 있게 제한을 걸기도 한다(Symmetric NAT). 이 때문에 STUN 서버를 통해 자기 자신의 주소를 찾아내지 못했을 경우, TURN(Traversal Using Relay NAT) 서버를 대안으로 이용하게 된다.  
+
+TURN(Traversal Using Relays around NAT)는 이러한 Symmetric NAT 제약조건을 우회하기 위해 만들어졌다. TURN 서버와 연결을 맺고, 이 서버에서 모든 교환 과정을 중계한다. 모든 기기는 TURN 서버로 패킷을 보내고, 서버가 이를 포워딩한다. 모든 작업을 한 서버에서 처리하는 만큼 오버헤드가 있다.  
+
+
+## ICE와 Candidate  
+STUN, TURN 서버를 이용해서 획득했던 IP 주소와 프로토콜, 포트의 조합으로 구성된 연결 가능한 네트워크 주소들을 후보(Candidate)라고 부른다. PeerConnection 객체를 생성하면 candidate 를 얻을 수 있다.  
+
+이렇게 후보들을 수집하면 일반적으로 3개의 주소를 얻게 된다.  
+
+- 자신의 사설 IP와 포트 넘버
+- 자신의 공인 IP와 포트 넘버 (STUN, TURN 서버로부터 획득 가능)
+- TURN 서버의 IP와 포트 넘버 (TURN 서버로부터 획득 가능)
+
+한편, 이 모든 과정은 ICE(Interactive Connectivity Establishment)라는 프레임워크 위에서 이루어진다. ICE는 두 개의 단말이 P2P 연결을 가능하게 하도록 최적의 경로를 찾아주는 프레임워크이다. ICE 는 STUN 과 TURN 을 활용하여 여러 Candidate 를 검출하고 이들 중 하나를 선택하여 Peer 간 연결을 수행한다.
+
+
+### SDP
+SDP(Session Description Protocol)는 WebRTC에서 스트리밍 미디어의 해상도나 형식, 코덱 등의 멀티미디어 컨텐츠의 초기 인수를 설명하기 위해 채택한 프로토콜이다. 미디어에 대한 메타 데이터로 사용할 수 있는 코덱은 무엇들이 있으며, 어떤 프로토콜을 사용하고, 비트레이트는 얼마이며, 밴드위드스는 얼마이다 와 같은 데이터가 텍스트 형태로 명시되어 있다.  
+
+PeerConnection 객체를 생성하게 되면 PeerConnection 객체에서 offer SDP, answer sdp 를 얻을 있다. 이처럼 미디어와 관련된 초기 세팅 정보를 기술하는 SDP는 발행 구독 모델(Pub/Sub)과 유사한 제안 응답 모델(Offer/Answer)을 갖고 있다.  
+
+
+### 시그널링
+위에서 이야기한 모든 과정을 일컬어 시그널링(Signaling)이라고 부른다. 즉 RTCPeerConnection 통신에 사용할 프로토콜, 채널, 미디어 코덱 및 형식, 데이터 전송 방법, 라우팅 정보와 NAT 통과 방법을 포함한 통신 규격을 교환하기 위해 두 장치의 제어 정보를 교환하는 과정을 의미한다.  
+
+![image](https://user-images.githubusercontent.com/99777315/201327342-2591c8fa-5156-4979-903d-bc5781cfeb74.png)  
+
+
+## 4. WebRTC API
+웹 브라우저 상에서 자바스크립트로 이용되어질 수 있는 WebRTC API를 지칭한다. WebRTC API 는 크게 세 가지로 나눌 수 있다. getUserMedia, PeerConnection, DataChannel이다.  
+
+- getUserMedia : 사용자 단말기의 미디어 장치(마이크와 웹캠)를 액세스할 수 있는 방법을 제공한다. getUserMedia를 통해 미디어 장치를 액세스 하게 되면 미디어 스트림 객체를 얻을 수 있으며 이를 PeerConnection에 전달하여 미디어 스트림을 전송하게 된다.
+- PeerConnection : 가장 중요한 API 이면서 Peer 간의 화상과 음성 등을 교환하기 위한 거의 모든 작업을 수행하는 API 이다. 기본적인 기능은 Singal Processing, Security, 비디오 encode/decode, 네트워크와 관련된 NAT Traversal, Packet send/receive, bandwidth estimation 등이 있다.
+- DataChannel : Peer 간에 텍스트나 파일을 주고 받을 수 있는 메시징 API 이다. 설정에 따라 SCTP 또는 RTP 로 전송할 수 있다. DataChannel 은 WebSocket 과 같은 수준의 API 를 제공하며 이는 Row Level API 라 할 수 있다. 대용량 파일을 주고받기 위해서는 이 API 를 활용한 어플리케이션 단의 테크닉이 필요하다.
