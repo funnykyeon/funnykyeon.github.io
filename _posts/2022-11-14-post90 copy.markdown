@@ -1,0 +1,20 @@
+---
+title: "sql 한글깨짐 현상"
+date: 2022-11-14
+last_modified_at: 2022-11-14
+categories: 
+  - Error
+tags:
+  - [SQL]
+---
+
+혼자 프로젝트를 하게 되어 현재 서버와 DB를 닫아놓고 H2-Console로 사용 중에 한글 깨짐 현상을 겪었다.  
+지금까지 코딩하면서 ????.?? 이런식으로 깨진적은 없었는데 뭔가싶어서 검색해봤는데 간단한 문제였다.  
+
+application.properties에 아래 코드를 넣어주면 해결 완료이다.  
+
+```java
+spring.datasource.sql-script-encoding= UTF-8
+```
+
+이젠 당황하는 시간에 구글링을 하고있다😂
