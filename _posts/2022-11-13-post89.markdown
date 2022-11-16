@@ -1,5 +1,5 @@
 ---
-title: "Gururu"
+title: "Gururu 프로젝트 종료"
 date: 2022-11-13
 last_modified_at: 2022-11-13
 categories: 

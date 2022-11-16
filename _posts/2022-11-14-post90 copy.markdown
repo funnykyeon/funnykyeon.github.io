@@ -1,5 +1,5 @@
 ---
-title: "sql 한글깨짐 현상"
+title: "SQL 한글깨짐 현상"
 date: 2022-11-14
 last_modified_at: 2022-11-14
 categories: 
