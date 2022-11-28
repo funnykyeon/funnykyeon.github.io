@@ -5,7 +5,7 @@ last_modified_at: 2022-11-27
 categories: 
   - Java
 tags:
-  - [field,Variable)]
+  - [field,Variable]
 ---
 
 ## 필드란? 변수란?
