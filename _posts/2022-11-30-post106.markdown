@@ -1,0 +1,75 @@
+---
+title: "JPA @DynamicUpdate"
+date: 2022-11-30
+last_modified_at: 2022-11-30
+categories: 
+  - Spring
+tags:
+  - [DynamicUpdate]
+---
+
+## 개요
+JPA를 사용하다보면 @DynamicUpdate라는 어노테이션이 있다.  
+JPA Entity에 사용하는 어노테이션인데, 실제 값이 변경된 컬럼으로만 update 쿼리를 만드는 기능이다.  
+
+너무 당연한 이야기 같지만, JPA의 기본 동작은 변경되지 않은 컬럼도 update 쿼리에 포함하기 때문에 이 어노테이션이 필요한 경우가 있다.  
+
+## 사용예시
+### Comment  
+```java
+@Entity
+class Comment(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0,
+
+    var body: String,
+
+    var likeCount: Int,
+
+    var createdAt: LocalDateTime
+)
+```
+
+### CommentRepository 
+```java
+interface CommentRepository : JpaRepository<Comment, Long> { }
+Test
+
+@Test
+@Transactional
+@Rollback(false)
+fun `dynamic update 결과 로그`() {
+    val comment = commentRepository.findByIdOrNull(1)
+        ?: throw EntityNotFoundException()
+
+    comment.likeCount = comment.likeCount + 1
+}
+```
+### 실행결과
+```
+Hibernate: select comment0_.id as id1_1_0_, comment0_.article_id as article_5_1_0_, comment0_.body as body2_1_0_, comment0_.created_at as created_3_1_0_, comment0_.like_count as like_cou4_1_0_, article1_.id as id1_0_1_, article1_.body as body2_0_1_ from comment comment0_ left outer join article article1_ on comment0_.article_id=article1_.id where comment0_.id=?
+Hibernate: update comment set article_id=?, body=?, created_at=?, like_count=? where id=?
+```
+실행 결과를 보면 likeCount의 값만 변경을 했음에도 불구하고, set 절 안에 body와 createdAt도 새로 변경값을 넣어주고 있는것을 알 수 있다.  
+
+자 이제 Comment에 @DynamicUpdate를 추가해서 다시 실행해보자.  
+
+### 실행결과
+
+```
+Hibernate: select comment0_.id as id1_1_0_, comment0_.article_id as article_5_1_0_, comment0_.body as body2_1_0_, comment0_.created_at as created_3_1_0_, comment0_.like_count as like_cou4_1_0_, article1_.id as id1_0_1_, article1_.body as body2_0_1_ from comment comment0_ left outer join article article1_ on comment0_.article_id=article1_.id where comment0_.id=?
+Hibernate: update comment set like_count=? where id=?
+```
+update 쿼리의 set부분에 실제로 변경한 like_count만 설정이 추가되었음을 알 수 있다.
+
+### 결론
+@DynamicUpdate는 변경된 컬럼만 찾아서 업데이트를 진행한다.  
+- 변경된 컬럼만 찾는다.
+- 변경되는 컬럼에따라 쿼리가 변경된다.  
+  이 두가지 사실만 놓고 보더라고 성능상 손해가 있을것 같다.  
+  그럼 언제 사용해야 좋을까?  
+하나의 테이블에 정말 많은 수의 컬럼이 있는데, 몇몇개의 컬럼만 자주 업데이트 하는 경우에 사용하라고 되어있다.
+
+아니면 @Version을 사용하지 않는 Optimistic Locking의 경우에 사용하라고 되어있다.  
+(Version을 사용하지 않고, 모든 필드를 Optimistic locking의 조건으로 걸게되면 어떤게 dirty 필드인지 체크해서 where조건을 만들 필요가 있기 때문)
